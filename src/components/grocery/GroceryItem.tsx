@@ -84,7 +84,7 @@ export function GroceryItem({ id, name, completed, creatorId, onToggle }: Grocer
           {name}
         </span>
         <div className="text-xs text-gray-500 mt-0.5">
-          {translations.added_by}: {creatorProfile?.first_name || translations.unknown_user}
+          {translations.addedBy}: {creatorProfile?.first_name || translations.anonymousUser}
         </div>
       </div>
       <AlertDialog>
@@ -94,7 +94,7 @@ export function GroceryItem({ id, name, completed, creatorId, onToggle }: Grocer
             aria-label="Delete item"
             onClick={(e) => e.stopPropagation()} // Prevent row click when clicking delete
           >
-            <Trash className="h-5 w-5 md:h-4 md:w-4" />
+            <Trash className="h-5 w-4 md:h-4 md:w-4" />
           </button>
         </AlertDialogTrigger>
         <AlertDialogContent onClick={(e) => e.stopPropagation()}> {/* Prevent row click when dialog is open */}
