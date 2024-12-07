@@ -63,26 +63,26 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
           <DialogHeader>
             <DialogTitle>{translations.create_new_list}</DialogTitle>
             <DialogDescription>
-              Let's start by getting to know you and naming your grocery list.
+              {translations.list_description}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="firstName">
-                What's your name?
+                {translations.first_name}
               </Label>
               <Input
                 id="firstName"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Enter your first name"
+                placeholder={translations.enter_first_name}
                 required
                 disabled={loading}
               />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="name">
-                What would you like to call your grocery list?
+                {translations.name}
               </Label>
               <Input
                 id="name"

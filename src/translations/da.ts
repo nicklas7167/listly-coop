@@ -10,14 +10,13 @@ export const danishTranslations: Translations = {
   create_first: "Opret din første liste eller tilslut dig en eksisterende for at komme i gang.",
   loading_lists: "Indlæser dine lister...",
   error_loading: "Fejl Ved Indlæsning",
-  try_refresh: "Prøv venligst at genindlæse siden.",
-  name: "Navn",
+  name: "Navn på listen",
   items: "Varer",
   actions: "Handlinger",
   
   // Create List Dialog
   create_new_list: "Opret Ny Liste",
-  list_description: "Giv din indkøbsliste et navn for at komme i gang.",
+  list_description: "Lad os starte med at lære dig at kende og navngive din indkøbsliste.",
   creating: "Opretter...",
   list_created: "Din liste er blevet oprettet.",
   failed_create: "Kunne ikke oprette liste. Prøv igen.",
@@ -25,7 +24,7 @@ export const danishTranslations: Translations = {
   // Join List Dialog
   join_existing: "Tilslut Eksisterende Liste",
   join_description: "Indtast dit navn og delingskoden for at tilslutte dig en eksisterende liste.",
-  first_name: "Fornavn",
+  first_name: "Hvad er dit navn?",
   enter_first_name: "Indtast dit fornavn",
   share_code: "Delingskode",
   enter_share_code: "Indtast delingskode",

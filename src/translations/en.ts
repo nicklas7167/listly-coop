@@ -10,14 +10,13 @@ export const englishTranslations: Translations = {
   create_first: "Create your first list or join an existing one to get started.",
   loading_lists: "Loading your lists...",
   error_loading: "Error Loading Data",
-  try_refresh: "Please try refreshing the page.",
-  name: "Name",
+  name: "What would you like to call your grocery list?",
   items: "Items",
   actions: "Actions",
   
   // Create List Dialog
   create_new_list: "Create New List",
-  list_description: "Give your grocery list a name to get started.",
+  list_description: "Let's start by getting to know you and naming your grocery list.",
   creating: "Creating...",
   list_created: "Your list has been created.",
   failed_create: "Failed to create list. Please try again.",
@@ -25,7 +24,7 @@ export const englishTranslations: Translations = {
   // Join List Dialog
   join_existing: "Join Existing List",
   join_description: "Enter your name and the share code to join an existing grocery list.",
-  first_name: "First Name",
+  first_name: "What's your name?",
   enter_first_name: "Enter your first name",
   share_code: "Share Code",
   enter_share_code: "Enter share code",
