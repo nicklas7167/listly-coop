@@ -19,28 +19,17 @@ const Dashboard = () => {
   const isMobile = useIsMobile();
   const { translations } = useLanguage();
 
-  // Check session and redirect if not authenticated
-  const { data: session, isLoading: sessionLoading } = useQuery({
-    queryKey: ['session'],
-    queryFn: async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error("Error fetching session:", error);
-        throw error;
-      }
-      return session;
-    },
-  });
-
-  // Redirect to login if no session
   useEffect(() => {
-    if (!sessionLoading && !session) {
-      navigate("/");
-    }
-  }, [session, sessionLoading, navigate]);
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/");
+      }
+    };
+    checkSession();
+  }, [navigate]);
 
-  // Only fetch lists if we have a session
-  const { data: lists, isLoading: listsLoading } = useQuery({
+  const { data: lists, isLoading } = useQuery({
     queryKey: ['lists'],
     queryFn: async () => {
       console.log("Fetching lists...");
@@ -58,27 +47,12 @@ const Dashboard = () => {
       console.log("Fetched lists:", data);
       return data || [];
     },
-    enabled: !!session, // Only run query if session exists
   });
 
   const handleSignOut = async () => {
-    try {
-      await supabase.auth.signOut();
-      navigate("/");
-    } catch (error) {
-      console.error("Error signing out:", error);
-      toast.error("Failed to sign out. Please try again.");
-    }
+    await supabase.auth.signOut();
+    navigate("/");
   };
-
-  // Show loading state while checking session
-  if (sessionLoading) {
-    return <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <p className="text-gray-500">{translations.loading}</p>
-      </div>
-    </div>;
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30 p-4 sm:p-6">
@@ -116,7 +90,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <ListsTable lists={lists || []} loading={listsLoading} />
+        <ListsTable lists={lists || []} loading={isLoading} />
       </div>
 
       <CreateListDialog
