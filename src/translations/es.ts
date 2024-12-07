@@ -75,4 +75,12 @@ export const spanishTranslations = {
   loading: "Cargando...",
   no_members: "No se encontraron miembros",
   anonymous_user: "Usuario Anónimo",
+
+  // Store Selection
+  select_store: "Seleccionar Tienda",
+  enter_store_name: "Ingrese nombre de la tienda",
+  quantity: "Cantidad",
+  add_store: "Agregar Tienda",
+  stores: "Tiendas",
+  no_stores: "Aún no hay tiendas agregadas",
 };

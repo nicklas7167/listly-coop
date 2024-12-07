@@ -18,7 +18,7 @@ interface GroceryItem {
   list_id: string;
   creator_id: string;
   store?: string;
-  quantity?: string;
+  quantity?: number | null;
 }
 
 const GroceryList = () => {
@@ -66,7 +66,7 @@ const GroceryList = () => {
         console.error('Error fetching items:', error);
         throw error;
       }
-      return data as GroceryItem[];
+      return data as unknown as GroceryItem[];
     },
   });
 
@@ -115,14 +115,12 @@ const GroceryList = () => {
     
     const { error } = await supabase
       .from('grocery_items')
-      .insert([
-        { 
-          name, 
-          list_id: id,
-          store: store || null,
-          quantity: quantity || null
-        }
-      ]);
+      .insert([{ 
+        name, 
+        list_id: id,
+        store: store || null,
+        quantity: quantity ? Number(quantity) : null
+      }]);
 
     if (error) {
       console.error('Error adding item:', error);
