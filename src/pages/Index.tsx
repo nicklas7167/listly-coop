@@ -46,103 +46,126 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30">
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 md:py-16 animate-fade-in">
-        <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent mb-4 md:mb-6 px-4">
-          Grocery List
-        </h1>
-        <p className="text-base md:text-lg lg:text-xl text-gray-600 text-center max-w-2xl mb-6 md:mb-8 px-4">
-          The smart way to manage grocery shopping with family and friends.
-          Never forget items or buy duplicates again!
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-white via-secondary/20 to-primary/10">
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 md:py-20">
+        {/* Hero Section */}
+        <div className="w-full max-w-4xl mx-auto text-center space-y-6 md:space-y-8 animate-fade-in">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary bg-300% animate-gradient">
+            Grocery List
+          </h1>
+          <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-4 leading-relaxed">
+            The smart way to manage grocery shopping with family and friends.
+            Never forget items or buy duplicates again!
+          </p>
 
-        <div className="w-full flex justify-center mb-8 md:mb-12 px-4">
-          <div className="flex flex-wrap items-center gap-2 text-primary bg-white/50 p-3 rounded-lg shadow-sm">
-            <Globe2 className="w-4 h-4 md:w-5 md:h-5" />
-            <span className="text-xs md:text-sm font-medium">Available in:</span>
-            <div className="flex flex-wrap gap-2">
-              <span className="text-xs md:text-sm bg-white px-2 py-1 rounded">🇬🇧 English</span>
-              <span className="text-xs md:text-sm bg-white px-2 py-1 rounded">🇪🇸 Español</span>
-              <span className="text-xs md:text-sm bg-white px-2 py-1 rounded">🇩🇰 Dansk</span>
+          {/* Language Support Banner */}
+          <div className="inline-flex items-center gap-3 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-gray-100">
+            <Globe2 className="w-4 h-4 text-primary" />
+            <div className="flex items-center gap-2 text-sm overflow-x-auto no-scrollbar">
+              <span className="whitespace-nowrap">🇬🇧 English</span>
+              <span className="text-gray-300">•</span>
+              <span className="whitespace-nowrap">🇪🇸 Español</span>
+              <span className="text-gray-300">•</span>
+              <span className="whitespace-nowrap">🇩🇰 Dansk</span>
             </div>
           </div>
+
+          {/* CTA Button */}
+          <Button 
+            onClick={scrollToAuth}
+            size="lg"
+            className="bg-primary hover:bg-primary/90 text-white px-8 py-7 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group mt-8"
+          >
+            Get Started
+            <ArrowDown className="ml-2 w-5 h-5 group-hover:translate-y-1 transition-transform duration-300" />
+          </Button>
         </div>
 
-        <Button 
-          onClick={scrollToAuth}
-          size="lg"
-          className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all group"
-        >
-          Get Started
-          <ArrowDown className="ml-2 w-5 h-5 group-hover:translate-y-1 transition-transform" />
-        </Button>
-
-        <div className="mt-16 md:mt-24 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 w-full max-w-5xl px-4">
-          {features.map((feature, index) => (
-            <div
-              key={feature.title}
-              className="p-4 md:p-6 rounded-xl bg-white shadow-lg animate-scale-in hover:shadow-xl transition-shadow"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <feature.icon className="w-8 h-8 md:w-12 md:h-12 text-primary mb-3 md:mb-4" />
-              <h3 className="text-lg md:text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-sm md:text-base text-gray-600">{feature.description}</p>
-            </div>
-          ))}
+        {/* Features Grid */}
+        <div className="w-full max-w-6xl mt-20 md:mt-32 px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {features.map((feature, index) => (
+              <div
+                key={feature.title}
+                className="group p-6 md:p-8 rounded-2xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 animate-scale-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="bg-primary/10 rounded-xl p-3 w-fit group-hover:scale-110 transition-transform duration-300">
+                  <feature.icon className="w-6 h-6 md:w-7 md:h-7 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mt-4 mb-2 text-gray-800">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
+      {/* Auth Section */}
       <div 
         ref={authRef}
-        className="min-h-screen flex items-center justify-center bg-gradient-to-b from-secondary/30 to-white px-4 py-16"
+        className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-secondary/20 to-primary/10 px-4 py-16"
       >
-        <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-4 md:p-8 mx-4 animate-fade-in">
-          <h2 className="text-2xl font-bold text-center mb-6 text-primary">Join Grocery List</h2>
-          <Auth
-            supabaseClient={supabase}
-            appearance={{
-              theme: ThemeSupa,
-              variables: {
-                default: {
-                  colors: {
-                    brand: 'hsl(var(--primary))',
-                    brandAccent: 'hsl(var(--primary))',
+        <div className="w-full max-w-md">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 animate-fade-in border border-gray-100">
+            <h2 className="text-2xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+              Join Grocery List
+            </h2>
+            <Auth
+              supabaseClient={supabase}
+              appearance={{
+                theme: ThemeSupa,
+                variables: {
+                  default: {
+                    colors: {
+                      brand: 'hsl(var(--primary))',
+                      brandAccent: 'hsl(var(--primary))',
+                    },
                   },
                 },
-              },
-              style: {
-                button: { background: 'hsl(var(--primary))', color: 'white' },
-                anchor: { color: 'hsl(var(--primary))' },
-                message: { color: 'hsl(var(--destructive))' },
-              },
-            }}
-            providers={[]}
-            localization={{
-              variables: {
-                sign_in: {
-                  email_input_placeholder: "Your email address",
-                  password_input_placeholder: "Your password",
-                  email_label: "Email",
-                  password_label: "Password",
-                  button_label: "Sign in",
-                  loading_button_label: "Signing in ...",
-                  social_provider_text: "Sign in with {{provider}}",
-                  link_text: "Already have an account? Sign in",
+                style: {
+                  button: { 
+                    background: 'hsl(var(--primary))',
+                    color: 'white',
+                    borderRadius: '0.75rem',
+                    padding: '0.75rem 1rem',
+                  },
+                  anchor: { color: 'hsl(var(--primary))' },
+                  message: { color: 'hsl(var(--destructive))' },
+                  input: {
+                    borderRadius: '0.75rem',
+                    padding: '0.75rem 1rem',
+                  },
                 },
-                sign_up: {
-                  email_input_placeholder: "Your email address",
-                  password_input_placeholder: "Your password",
-                  email_label: "Email",
-                  password_label: "Password",
-                  button_label: "Sign up",
-                  loading_button_label: "Signing up ...",
-                  social_provider_text: "Sign up with {{provider}}",
-                  link_text: "Don't have an account? Sign up",
+              }}
+              providers={[]}
+              localization={{
+                variables: {
+                  sign_in: {
+                    email_input_placeholder: "Your email address",
+                    password_input_placeholder: "Your password",
+                    email_label: "Email",
+                    password_label: "Password",
+                    button_label: "Sign in",
+                    loading_button_label: "Signing in ...",
+                    social_provider_text: "Sign in with {{provider}}",
+                    link_text: "Already have an account? Sign in",
+                  },
+                  sign_up: {
+                    email_input_placeholder: "Your email address",
+                    password_input_placeholder: "Your password",
+                    email_label: "Email",
+                    password_label: "Password",
+                    button_label: "Sign up",
+                    loading_button_label: "Signing up ...",
+                    social_provider_text: "Sign up with {{provider}}",
+                    link_text: "Don't have an account? Sign up",
+                  },
                 },
-              },
-            }}
-            theme="default"
-          />
+              }}
+              theme="default"
+            />
+          </div>
         </div>
       </div>
 
