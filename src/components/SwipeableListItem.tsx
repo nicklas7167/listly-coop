@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react';
-import { motion, PanInfo, useAnimation } from 'framer-motion';
+import { motion, PanInfo, useAnimation, AnimatePresence } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
 
 interface SwipeableListItemProps {
   children: React.ReactNode;
-  onDelete: () => void;
+  onDelete: () => Promise<void>;
 }
 
 export function SwipeableListItem({ children, onDelete }: SwipeableListItemProps) {
@@ -17,8 +17,8 @@ export function SwipeableListItem({ children, onDelete }: SwipeableListItemProps
     const velocity = info.velocity.x;
 
     if (offset < -100 || velocity < -500) {
-      await controls.start({ x: -200 });
-      onDelete();
+      await controls.start({ x: -200, height: 0, opacity: 0 });
+      await onDelete();
     } else {
       controls.start({ x: 0 });
     }
@@ -26,7 +26,13 @@ export function SwipeableListItem({ children, onDelete }: SwipeableListItemProps
   };
 
   return (
-    <div ref={constraintsRef} className="relative overflow-hidden">
+    <motion.div
+      initial={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.2 }}
+      className="relative overflow-hidden"
+      ref={constraintsRef}
+    >
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: isDragging ? 1 : 0 }}
@@ -47,6 +53,6 @@ export function SwipeableListItem({ children, onDelete }: SwipeableListItemProps
       >
         {children}
       </motion.div>
-    </div>
+    </motion.div>
   );
 }

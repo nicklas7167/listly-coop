@@ -6,6 +6,7 @@ import { GroceryHeader } from "@/components/grocery/GroceryHeader";
 import { AddItemDialog } from "@/components/grocery/AddItemDialog";
 import { GroceryItem } from "@/components/grocery/GroceryItem";
 import { useToast } from "@/hooks/use-toast";
+import { AnimatePresence } from "framer-motion";
 
 interface GroceryItem {
   id: string;
@@ -125,6 +126,7 @@ const GroceryList = () => {
         .eq('id', itemId);
 
       if (error) throw error;
+      return Promise.resolve();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groceryItems', id] });
@@ -164,16 +166,18 @@ const GroceryList = () => {
             <div className="text-center py-4">Loading items...</div>
           ) : (
             <div className="space-y-2">
-              {items.map((item) => (
-                <GroceryItem
-                  key={item.id}
-                  id={item.id}
-                  name={item.name}
-                  completed={item.completed}
-                  onToggle={toggleItem}
-                  onDelete={(id) => deleteItemMutation.mutate(id)}
-                />
-              ))}
+              <AnimatePresence initial={false}>
+                {items.map((item) => (
+                  <GroceryItem
+                    key={item.id}
+                    id={item.id}
+                    name={item.name}
+                    completed={item.completed}
+                    onToggle={toggleItem}
+                    onDelete={(id) => deleteItemMutation.mutateAsync(id)}
+                  />
+                ))}
+              </AnimatePresence>
               {items.length === 0 && (
                 <div className="text-center py-4 text-gray-500">
                   No items in the list yet. Add some items to get started!
@@ -185,6 +189,6 @@ const GroceryList = () => {
       </div>
     </div>
   );
-};
+}
 
 export default GroceryList;
