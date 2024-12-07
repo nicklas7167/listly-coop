@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Share2 } from "lucide-react";
+import { PlusCircle, Share2, Globe2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { CreateListDialog } from "@/components/CreateListDialog";
 import { JoinListDialog } from "@/components/JoinListDialog";
@@ -46,10 +46,20 @@ const Index = () => {
         <h1 className="text-4xl md:text-6xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent mb-6">
           Grocery List
         </h1>
-        <p className="text-lg md:text-xl text-gray-600 text-center max-w-2xl mb-12">
-          Create and share grocery lists with your family and friends. Simple,
-          fast, and collaborative.
+        <p className="text-lg md:text-xl text-gray-600 text-center max-w-2xl mb-8">
+          The smart way to manage grocery shopping with family and friends.
+          Never forget items or buy duplicates again!
         </p>
+
+        <div className="flex flex-col md:flex-row gap-4 items-center mb-12">
+          <div className="flex items-center gap-2 text-primary">
+            <Globe2 className="w-5 h-5" />
+            <span className="text-sm font-medium">Available in:</span>
+            <span className="text-sm">🇬🇧 English</span>
+            <span className="text-sm">🇪🇸 Español</span>
+            <span className="text-sm">🇩🇰 Dansk</span>
+          </div>
+        </div>
 
         <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-8">
           <Auth
@@ -122,19 +132,19 @@ const Index = () => {
 
 const features = [
   {
-    title: "Create Lists",
-    description: "Create multiple grocery lists for different occasions or stores.",
+    title: "Smart Shopping Lists",
+    description: "Create multiple lists for different stores or occasions. Keep track of what you need and who added each item.",
     icon: PlusCircle,
   },
   {
-    title: "Collaborate",
-    description: "Share your lists with family and friends using a simple code.",
+    title: "Real-time Collaboration",
+    description: "Share lists with family members or roommates. Everyone sees updates instantly when items are added or checked off.",
     icon: Share2,
   },
   {
-    title: "Real-time Updates",
-    description: "See changes instantly when items are added or checked off.",
-    icon: Share2,
+    title: "Multi-language Support",
+    description: "Use the app in your preferred language - English, Spanish, or Danish. Switch anytime with one click.",
+    icon: Globe2,
   },
 ];
 
