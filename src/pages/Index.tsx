@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Share2, Globe2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { PlusCircle, Share2, Globe2, ArrowDown } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { CreateListDialog } from "@/components/CreateListDialog";
 import { JoinListDialog } from "@/components/JoinListDialog";
 import { Auth } from "@supabase/auth-ui-react";
@@ -13,6 +13,7 @@ const Index = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showJoinDialog, setShowJoinDialog] = useState(false);
   const [session, setSession] = useState(null);
+  const authRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,13 +37,17 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  const scrollToAuth = () => {
+    authRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   if (session) {
     return null;
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30">
-      <div className="container mx-auto px-4 py-8 md:py-16 flex flex-col items-center animate-fade-in">
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 md:py-16 animate-fade-in">
         <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent mb-4 md:mb-6 px-4">
           Grocery List
         </h1>
@@ -63,7 +68,36 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-4 md:p-8 mx-4">
+        <Button 
+          onClick={scrollToAuth}
+          size="lg"
+          className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all group"
+        >
+          Get Started
+          <ArrowDown className="ml-2 w-5 h-5 group-hover:translate-y-1 transition-transform" />
+        </Button>
+
+        <div className="mt-16 md:mt-24 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 w-full max-w-5xl px-4">
+          {features.map((feature, index) => (
+            <div
+              key={feature.title}
+              className="p-4 md:p-6 rounded-xl bg-white shadow-lg animate-scale-in hover:shadow-xl transition-shadow"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <feature.icon className="w-8 h-8 md:w-12 md:h-12 text-primary mb-3 md:mb-4" />
+              <h3 className="text-lg md:text-xl font-semibold mb-2">{feature.title}</h3>
+              <p className="text-sm md:text-base text-gray-600">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div 
+        ref={authRef}
+        className="min-h-screen flex items-center justify-center bg-gradient-to-b from-secondary/30 to-white px-4 py-16"
+      >
+        <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-4 md:p-8 mx-4 animate-fade-in">
+          <h2 className="text-2xl font-bold text-center mb-6 text-primary">Join Grocery List</h2>
           <Auth
             supabaseClient={supabase}
             appearance={{
@@ -109,20 +143,6 @@ const Index = () => {
             }}
             theme="default"
           />
-        </div>
-
-        <div className="mt-8 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 w-full max-w-5xl px-4">
-          {features.map((feature, index) => (
-            <div
-              key={feature.title}
-              className="p-4 md:p-6 rounded-xl bg-white shadow-lg animate-scale-in hover:shadow-xl transition-shadow"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <feature.icon className="w-8 h-8 md:w-12 md:h-12 text-primary mb-3 md:mb-4" />
-              <h3 className="text-lg md:text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-sm md:text-base text-gray-600">{feature.description}</p>
-            </div>
-          ))}
         </div>
       </div>
 
