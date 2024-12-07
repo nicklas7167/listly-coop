@@ -11,8 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { checkListExists, joinList } from "@/utils/listOperations";
 
 interface JoinListDialogProps {
   open: boolean;
@@ -30,48 +30,19 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
     setLoading(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        throw new Error("User not authenticated");
-      }
+      await checkListExists(code);
+      const { alreadyMember } = await joinList(code);
 
-      // First check if the list exists
-      const { data: list, error: listError } = await supabase
-        .from("lists")
-        .select("*")
-        .eq("id", code)
-        .single();
-
-      if (listError) {
-        throw new Error("List not found");
-      }
-
-      // Join the list
-      const { error: joinError } = await supabase
-        .from("list_members")
-        .insert({
-          list_id: code,
-          user_id: user.id
+      if (alreadyMember) {
+        toast({
+          description: "You're already a member of this list.",
         });
-
-      if (joinError) {
-        if (joinError.code === "23505") {
-          // Unique violation - already a member
-          toast({
-            description: "You're already a member of this list.",
-          });
-          navigate(`/list/${code}`);
-          onOpenChange(false);
-          return;
-        }
-        throw joinError;
+      } else {
+        toast({
+          title: "Success!",
+          description: "You've joined the list.",
+        });
       }
-
-      toast({
-        title: "Success!",
-        description: "You've joined the list.",
-      });
 
       navigate(`/list/${code}`);
       onOpenChange(false);

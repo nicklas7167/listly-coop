@@ -11,8 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { createList } from "@/utils/listOperations";
 
 interface CreateListDialogProps {
   open: boolean;
@@ -30,23 +30,8 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
     setLoading(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const data = await createList(listName);
       
-      if (!user) {
-        throw new Error("User not authenticated");
-      }
-
-      const { data, error } = await supabase
-        .from("lists")
-        .insert({
-          name: listName,
-          owner_id: user.id
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
       toast({
         title: "Success!",
         description: "Your list has been created.",
