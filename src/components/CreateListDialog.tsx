@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { createList } from "@/utils/listOperations";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CreateListDialogProps {
   open: boolean;
@@ -22,6 +23,7 @@ interface CreateListDialogProps {
 
 export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) {
   const [listName, setListName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { translations } = useLanguage();
@@ -31,6 +33,16 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
     setLoading(true);
 
     try {
+      // Update the user's profile with their first name
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ first_name: firstName.trim() })
+        .eq('id', (await supabase.auth.getUser()).data.user?.id);
+
+      if (profileError) {
+        throw new Error("Failed to update profile");
+      }
+
       const data = await createList(listName);
       
       toast.success(translations.list_created);
@@ -56,6 +68,20 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="firstName" className="text-right">
+                {translations.first_name}
+              </Label>
+              <Input
+                id="firstName"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="col-span-3"
+                placeholder={translations.enter_first_name}
+                required
+                disabled={loading}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
                 {translations.name}
               </Label>
@@ -71,7 +97,10 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={!listName.trim() || loading}>
+            <Button 
+              type="submit" 
+              disabled={!listName.trim() || !firstName.trim() || loading}
+            >
               {loading ? translations.creating : translations.create_list}
             </Button>
           </DialogFooter>
