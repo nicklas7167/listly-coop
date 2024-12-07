@@ -30,6 +30,12 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
     setLoading(true);
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
       // First check if the list exists
       const { data: list, error: listError } = await supabase
         .from("lists")
@@ -44,7 +50,10 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
       // Join the list
       const { error: joinError } = await supabase
         .from("list_members")
-        .insert([{ list_id: code }]);
+        .insert({
+          list_id: code,
+          user_id: user.id
+        });
 
       if (joinError) {
         if (joinError.code === "23505") {

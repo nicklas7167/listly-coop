@@ -30,9 +30,18 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
     setLoading(true);
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
       const { data, error } = await supabase
         .from("lists")
-        .insert([{ name: listName }])
+        .insert({
+          name: listName,
+          owner_id: user.id
+        })
         .select()
         .single();
 
