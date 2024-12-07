@@ -6,7 +6,7 @@ import type {
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_REMOVE_DELAY = 3000 // Reduced from 1000000 to 3000ms (3 seconds)
 
 type ToasterToast = ToastProps & {
   id: string
@@ -155,6 +155,8 @@ function toast({ ...props }: Toast) {
       ...props,
       id,
       open: true,
+      duration: 2000, // Set default duration to 2 seconds
+      className: "bg-secondary/80 backdrop-blur-sm", // Make toasts more subtle
       onOpenChange: (open) => {
         if (!open) dismiss()
       },
