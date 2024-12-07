@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Copy, Plus } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -48,12 +48,22 @@ const GroceryList = () => {
     );
   };
 
-  const copyShareCode = () => {
-    navigator.clipboard.writeText(id!);
-    toast({
-      title: "Share code copied!",
-      description: "Share this code with others to collaborate on this list.",
-    });
+  const copyShareCode = async () => {
+    if (!id) return;
+    
+    try {
+      await navigator.clipboard.writeText(id);
+      toast({
+        title: "Share code copied!",
+        description: "Share this code with others to collaborate on this list.",
+      });
+    } catch (err) {
+      toast({
+        title: "Failed to copy code",
+        description: "Please try again or copy it manually.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
