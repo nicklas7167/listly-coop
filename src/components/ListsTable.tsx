@@ -1,9 +1,17 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Copy } from "lucide-react";
+import { MoreVertical, Share2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface List {
   id: string;
@@ -20,6 +28,26 @@ export function ListsTable({ lists, loading }: ListsTableProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
+
+  // Fetch item counts for each list
+  const { data: itemCounts } = useQuery({
+    queryKey: ['itemCounts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('grocery_items')
+        .select('list_id, count')
+        .select('list_id, count(*)', { count: 'exact' })
+        .group('list_id');
+
+      if (error) throw error;
+      
+      // Convert to a map for easier lookup
+      return (data || []).reduce((acc, { list_id, count }) => {
+        acc[list_id] = count;
+        return acc;
+      }, {} as Record<string, number>);
+    },
+  });
 
   const copyShareCode = (shareCode: string, event: React.MouseEvent) => {
     event.stopPropagation();
@@ -55,7 +83,7 @@ export function ListsTable({ lists, loading }: ListsTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead>Share Code</TableHead>
+            <TableHead className="text-right">Items</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -67,28 +95,31 @@ export function ListsTable({ lists, loading }: ListsTableProps) {
               className="cursor-pointer hover:bg-secondary/10 transition-colors"
             >
               <TableCell className="font-medium">{list.name}</TableCell>
-              <TableCell>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center gap-2 text-xs sm:text-sm"
-                  onClick={(e) => copyShareCode(list.share_code, e)}
-                >
-                  <span className="font-mono">{list.share_code}</span>
-                  <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                </Button>
+              <TableCell className="text-right">
+                {itemCounts?.[list.id] || 0}
               </TableCell>
               <TableCell className="text-right">
-                <Button
-                  variant="ghost"
-                  size={isMobile ? "sm" : "default"}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/list/${list.id}`);
-                  }}
-                >
-                  View
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 p-0"
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                      <span className="sr-only">Open menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenuItem onClick={(e) => copyShareCode(list.share_code, e)}>
+                      <Share2 className="mr-2 h-4 w-4" />
+                      <span>Copy Share Code</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate(`/list/${list.id}`)}>
+                      View List
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}
