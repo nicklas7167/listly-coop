@@ -118,15 +118,19 @@ const GroceryList = () => {
     },
   });
 
+  // Delete item mutation
   const deleteItemMutation = useMutation({
     mutationFn: async (itemId: string) => {
+      console.log('Deleting item:', itemId);
       const { error } = await supabase
         .from('grocery_items')
         .delete()
         .eq('id', itemId);
 
-      if (error) throw error;
-      return Promise.resolve();
+      if (error) {
+        console.error('Error in delete mutation:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groceryItems', id] });
@@ -134,6 +138,14 @@ const GroceryList = () => {
         description: "Item removed",
         duration: 2000,
       });
+    },
+    onError: (error) => {
+      console.error('Delete mutation error:', error);
+      toast({
+        description: "Failed to delete item. Please try again.",
+        variant: "destructive",
+      });
+      throw error; // Re-throw to trigger the catch in SwipeableListItem
     },
   });
 
@@ -146,6 +158,11 @@ const GroceryList = () => {
       itemId,
       completed: !currentStatus,
     });
+  };
+
+  const handleDeleteItem = async (itemId: string) => {
+    console.log('Handling delete for item:', itemId);
+    return deleteItemMutation.mutateAsync(itemId);
   };
 
   return (
@@ -174,7 +191,7 @@ const GroceryList = () => {
                     name={item.name}
                     completed={item.completed}
                     onToggle={toggleItem}
-                    onDelete={(id) => deleteItemMutation.mutateAsync(id)}
+                    onDelete={handleDeleteItem}
                   />
                 ))}
               </AnimatePresence>
