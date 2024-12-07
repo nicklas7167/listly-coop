@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -18,6 +19,7 @@ const languages = [
 
 export function LanguageSelector() {
   const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const updateLanguage = async (languageCode: string) => {
     setIsLoading(true);
@@ -33,6 +35,7 @@ export function LanguageSelector() {
       if (updateError) throw updateError;
 
       toast.success(`Language updated to ${languages.find(l => l.code === languageCode)?.name}`);
+      setOpen(false);
     } catch (error) {
       console.error("Error updating language:", error);
       toast.error("Failed to update language preference");
@@ -42,22 +45,30 @@ export function LanguageSelector() {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
         <Button variant="ghost" size="icon" disabled={isLoading}>
           <Globe className="h-4 w-4" />
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {languages.map((language) => (
-          <DropdownMenuItem
-            key={language.code}
-            onClick={() => updateLanguage(language.code)}
-          >
-            {language.name}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Select Language</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          {languages.map((language) => (
+            <Button
+              key={language.code}
+              variant="outline"
+              className="w-full justify-start"
+              onClick={() => updateLanguage(language.code)}
+              disabled={isLoading}
+            >
+              {language.name}
+            </Button>
+          ))}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
