@@ -1,3 +1,5 @@
+export type Language = "en" | "es" | "da";
+
 export interface Translations {
   // Dashboard translations
   my_lists: string;
@@ -18,12 +20,12 @@ export interface Translations {
   creating: string;
   list_created: string;
   failed_create: string;
+  first_name: string;
+  enter_first_name: string;
   
   // Join List Dialog
   join_existing: string;
   join_description: string;
-  first_name: string;
-  enter_first_name: string;
   share_code: string;
   enter_share_code: string;
   joining: string;
@@ -73,5 +75,3 @@ export interface Translations {
   no_members: string;
   anonymous_user: string;
 }
-
-export type Language = 'en' | 'es' | 'da';
