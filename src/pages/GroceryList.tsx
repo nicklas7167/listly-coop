@@ -6,6 +6,7 @@ import { GroceryHeader } from "@/components/grocery/GroceryHeader";
 import { AddItemDialog } from "@/components/grocery/AddItemDialog";
 import { GroceryItem } from "@/components/grocery/GroceryItem";
 import { AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface GroceryItem {
   id: string;
@@ -18,6 +19,7 @@ const GroceryList = () => {
   const { id } = useParams();
   const [shareCode, setShareCode] = useState<string>("");
   const queryClient = useQueryClient();
+  const { translations } = useLanguage();
 
   // Fetch list details
   const { data: listDetails } = useQuery({
@@ -131,7 +133,7 @@ const GroceryList = () => {
 
         <div className="bg-white rounded-xl shadow-lg p-6 animate-scale-in">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold">{listDetails?.name || "Loading..."}</h1>
+            <h1 className="text-2xl font-bold">{listDetails?.name || translations.loading_lists}</h1>
             <AddItemDialog 
               onAddItem={handleAddItem}
               isAdding={false}
@@ -139,7 +141,7 @@ const GroceryList = () => {
           </div>
 
           {isLoading ? (
-            <div className="text-center py-4">Loading items...</div>
+            <div className="text-center py-4">{translations.loading_items}</div>
           ) : (
             <div className="space-y-2">
               <AnimatePresence initial={false}>
@@ -155,7 +157,7 @@ const GroceryList = () => {
               </AnimatePresence>
               {items.length === 0 && (
                 <div className="text-center py-4 text-gray-500">
-                  No items in the list yet. Add some items to get started!
+                  {translations.no_items}
                 </div>
               )}
             </div>

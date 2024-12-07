@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { checkListExists, joinList } from "@/utils/listOperations";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface JoinListDialogProps {
   open: boolean;
@@ -25,13 +26,13 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
   const [firstName, setFirstName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { translations } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Update user's profile with first name
       const { error: profileError } = await supabase
         .from('profiles')
         .update({ first_name: firstName.trim() })
@@ -49,16 +50,16 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
       console.log("Join result - already member:", alreadyMember);
 
       if (alreadyMember) {
-        toast("You're already a member of this list.");
+        toast(translations.already_member);
       } else {
-        toast.success("You've joined the list.");
+        toast.success(translations.joined_success);
       }
 
       navigate(`/list/${list.id}`);
       onOpenChange(false);
     } catch (error) {
       console.error("Error joining list:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to join list. Please check the share code and try again.");
+      toast.error(translations.failed_join);
     } finally {
       setLoading(false);
     }
@@ -69,36 +70,36 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Join Existing List</DialogTitle>
+            <DialogTitle>{translations.join_existing}</DialogTitle>
             <DialogDescription>
-              Enter your name and the share code to join an existing grocery list.
+              {translations.join_description}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="firstName" className="text-right">
-                First Name
+                {translations.first_name}
               </Label>
               <Input
                 id="firstName"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 className="col-span-3"
-                placeholder="Enter your first name"
+                placeholder={translations.enter_first_name}
                 required
                 disabled={loading}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="shareCode" className="text-right">
-                Share Code
+                {translations.share_code}
               </Label>
               <Input
                 id="shareCode"
                 value={shareCode}
                 onChange={(e) => setShareCode(e.target.value)}
                 className="col-span-3"
-                placeholder="Enter share code"
+                placeholder={translations.enter_share_code}
                 required
                 disabled={loading}
               />
@@ -109,7 +110,7 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
               type="submit" 
               disabled={!shareCode.trim() || !firstName.trim() || loading}
             >
-              {loading ? "Joining..." : "Join List"}
+              {loading ? translations.joining : translations.join_list}
             </Button>
           </DialogFooter>
         </form>

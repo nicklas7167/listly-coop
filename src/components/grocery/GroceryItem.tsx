@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface GroceryItemProps {
   id: string;
@@ -21,6 +22,8 @@ interface GroceryItemProps {
 }
 
 export function GroceryItem({ id, name, completed, onToggle }: GroceryItemProps) {
+  const { translations } = useLanguage();
+
   const handleDelete = async () => {
     try {
       const { error } = await supabase
@@ -30,13 +33,13 @@ export function GroceryItem({ id, name, completed, onToggle }: GroceryItemProps)
 
       if (error) throw error;
 
-      toast.success("Item deleted");
+      toast.success(translations.item_deleted);
 
       // Force reload the page to refresh the list
       window.location.reload();
     } catch (error) {
       console.error('Error deleting item:', error);
-      toast.error("Failed to delete item");
+      toast.error(translations.failed_delete);
     }
   };
 
@@ -71,14 +74,14 @@ export function GroceryItem({ id, name, completed, onToggle }: GroceryItemProps)
         </AlertDialogTrigger>
         <AlertDialogContent onClick={(e) => e.stopPropagation()}> {/* Prevent row click when dialog is open */}
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{translations.delete_confirm}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete "{name}" from your list.
+              {translations.delete_item_confirm}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            <AlertDialogCancel>{translations.cancel}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>{translations.delete}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

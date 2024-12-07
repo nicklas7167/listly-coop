@@ -9,6 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AddItemDialogProps {
   onAddItem: (name: string) => Promise<void>;
@@ -18,6 +19,7 @@ interface AddItemDialogProps {
 export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
   const [newItem, setNewItem] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { translations } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,13 +39,13 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Item</DialogTitle>
+          <DialogTitle>{translations.add_new_item}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
           <Input
             value={newItem}
             onChange={(e) => setNewItem(e.target.value)}
-            placeholder="Enter item name..."
+            placeholder={translations.enter_item_name}
             autoFocus
           />
           <Button 
@@ -51,7 +53,7 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
             className="w-full" 
             disabled={!newItem.trim() || isAdding}
           >
-            {isAdding ? "Adding..." : "Add Item"}
+            {isAdding ? translations.adding_item : translations.add_item}
           </Button>
         </form>
       </DialogContent>

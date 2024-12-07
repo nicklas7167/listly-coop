@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { createList } from "@/utils/listOperations";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface CreateListDialogProps {
   open: boolean;
@@ -23,6 +24,7 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
   const [listName, setListName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { translations } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,12 +33,12 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
     try {
       const data = await createList(listName);
       
-      toast.success("Your list has been created.");
+      toast.success(translations.list_created);
       navigate(`/list/${data.id}`);
       onOpenChange(false);
     } catch (error) {
       console.error("Error creating list:", error);
-      toast.error("Failed to create list. Please try again.");
+      toast.error(translations.failed_create);
     } finally {
       setLoading(false);
     }
@@ -47,22 +49,22 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Create New List</DialogTitle>
+            <DialogTitle>{translations.create_new_list}</DialogTitle>
             <DialogDescription>
-              Give your grocery list a name to get started.
+              {translations.list_description}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
-                Name
+                {translations.name}
               </Label>
               <Input
                 id="name"
                 value={listName}
                 onChange={(e) => setListName(e.target.value)}
                 className="col-span-3"
-                placeholder="Weekly Groceries"
+                placeholder={translations.name}
                 required
                 disabled={loading}
               />
@@ -70,7 +72,7 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
           </div>
           <DialogFooter>
             <Button type="submit" disabled={!listName.trim() || loading}>
-              {loading ? "Creating..." : "Create List"}
+              {loading ? translations.creating : translations.create_list}
             </Button>
           </DialogFooter>
         </form>
