@@ -17,7 +17,7 @@ export type Database = {
           id: string
           list_id: string
           name: string
-          quantity: string | null
+          quantity: number | null
           store: string | null
         }
         Insert: {
@@ -27,7 +27,7 @@ export type Database = {
           id?: string
           list_id: string
           name: string
-          quantity?: string | null
+          quantity?: number | null
           store?: string | null
         }
         Update: {
@@ -37,7 +37,7 @@ export type Database = {
           id?: string
           list_id?: string
           name?: string
-          quantity?: string | null
+          quantity?: number | null
           store?: string | null
         }
         Relationships: [
@@ -76,6 +76,35 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "list_members_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      list_stores: {
+        Row: {
+          created_at: string
+          id: string
+          list_id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          list_id: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          list_id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "list_stores_list_id_fkey"
             columns: ["list_id"]
             isOneToOne: false
             referencedRelation: "lists"

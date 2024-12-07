@@ -94,16 +94,11 @@ export function GroceryItem({
           <span className={completed ? "line-through text-gray-400" : ""}>
             {name}
           </span>
-          {quantity && (
-            <span className="text-sm text-gray-500">
-              · {quantity}
-            </span>
-          )}
-          {store && (
-            <span className="text-sm text-gray-500">
-              · {store}
-            </span>
-          )}
+          <div className="flex items-baseline gap-1 text-sm text-gray-500">
+            {(store || quantity) && "·"}
+            {quantity && <span>{quantity}</span>}
+            {store && <span>{store}</span>}
+          </div>
           <span className="text-xs text-gray-400 font-medium">
             · {creatorProfile?.first_name || translations.anonymous_user}
           </span>

@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { StoreSelect } from "./StoreSelect";
+import { useParams } from "react-router-dom";
 
 interface AddItemDialogProps {
   onAddItem: (name: string, store?: string, quantity?: string) => Promise<void>;
@@ -22,6 +24,7 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
   const [quantity, setQuantity] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const { translations } = useLanguage();
+  const { id: listId } = useParams();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,16 +55,22 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
             placeholder={translations.enter_item_name}
             autoFocus
           />
-          <Input
-            value={store}
-            onChange={(e) => setStore(e.target.value)}
-            placeholder="Store (optional)"
-          />
-          <Input
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            placeholder="Quantity (optional)"
-          />
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <StoreSelect
+                listId={listId || ""}
+                value={store}
+                onChange={setStore}
+              />
+            </div>
+            <Input
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              placeholder={translations.quantity}
+              className="w-24"
+            />
+          </div>
           <Button 
             type="submit" 
             className="w-full" 
