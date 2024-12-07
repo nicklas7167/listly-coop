@@ -39,49 +39,21 @@ const Dashboard = () => {
 
   const fetchLists = async () => {
     try {
-      // First, get lists where user is owner
-      const { data: ownedLists, error: ownedError } = await supabase
+      console.log("Fetching lists...");
+      const { data: lists, error } = await supabase
         .from("lists")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (ownedError) throw ownedError;
-
-      // Then, get list IDs where user is a member
-      const { data: memberships, error: membershipError } = await supabase
-        .from("list_members")
-        .select("list_id");
-
-      if (membershipError) throw membershipError;
-
-      // If user is a member of any lists, fetch those lists
-      let memberLists = [];
-      if (memberships && memberships.length > 0) {
-        const listIds = memberships.map(m => m.list_id);
-        const { data: sharedLists, error: sharedError } = await supabase
-          .from("lists")
-          .select("*")
-          .in("id", listIds)
-          .order("created_at", { ascending: false });
-
-        if (sharedError) throw sharedError;
-        memberLists = sharedLists || [];
+      if (error) {
+        console.error("Error fetching lists:", error);
+        throw error;
       }
 
-      // Combine and deduplicate lists
-      const allLists = [
-        ...(ownedLists || []).map(list => ({ ...list, type: "owned" })),
-        ...memberLists.map(list => ({ ...list, type: "shared" }))
-      ];
-
-      // Remove duplicates based on list ID
-      const uniqueLists = Array.from(
-        new Map(allLists.map(list => [list.id, list])).values()
-      );
-
-      setLists(uniqueLists);
+      console.log("Fetched lists:", lists);
+      setLists(lists || []);
     } catch (error) {
-      console.error("Error fetching lists:", error);
+      console.error("Error in fetchLists:", error);
       toast({
         title: "Error",
         description: "Failed to fetch your lists. Please try again.",
@@ -162,7 +134,9 @@ const Dashboard = () => {
                   <TableRow key={list.id}>
                     <TableCell className="font-medium">{list.name}</TableCell>
                     <TableCell>
-                      {list.type === "owned" ? "Owner" : "Shared with me"}
+                      {list.owner_id === supabase.auth.getUser()?.data?.user?.id
+                        ? "Owner"
+                        : "Shared with me"}
                     </TableCell>
                     <TableCell>
                       {new Date(list.created_at).toLocaleDateString()}
