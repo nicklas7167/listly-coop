@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Globe } from "lucide-react";
+import { Globe, Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,9 +12,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const languages = [
-  { code: "en", name: "English" },
-  { code: "es", name: "Español" },
-  { code: "da", name: "Dansk" },
+  { code: "en", name: "English", flag: "🇬🇧" },
+  { code: "es", name: "Español", flag: "🇪🇸" },
+  { code: "da", name: "Dansk", flag: "🇩🇰" },
 ];
 
 export function LanguageSelector() {
@@ -60,10 +60,11 @@ export function LanguageSelector() {
             <Button
               key={language.code}
               variant="outline"
-              className="w-full justify-start"
+              className="w-full justify-start gap-3"
               onClick={() => updateLanguage(language.code)}
               disabled={isLoading}
             >
+              <span className="text-xl">{language.flag}</span>
               {language.name}
             </Button>
           ))}
