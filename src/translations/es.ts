@@ -1,78 +1,44 @@
 import { Translations } from "./types";
 
-export const spanishTranslations: Translations = {
-  // Dashboard translations
+const translations: Translations = {
   my_lists: "Mis Listas",
   create_list: "Crear Lista",
   join_list: "Unirse a Lista",
   sign_out: "Cerrar Sesión",
-  no_lists: "Sin Listas Aún",
-  create_first: "Crea tu primera lista o únete a una existente para comenzar.",
-  loading_lists: "Cargando tus listas...",
-  error_loading: "Error al Cargar Datos",
-  try_refresh: "Por favor, intenta refrescar la página.",
-  name: "Nombre",
-  items: "Artículos",
-  actions: "Acciones",
-  
-  // Create List Dialog
-  create_new_list: "Crear Nueva Lista",
-  list_description: "Dale un nombre a tu lista de compras para comenzar.",
-  creating: "Creando...",
-  list_created: "Tu lista ha sido creada.",
-  failed_create: "Error al crear la lista. Por favor, intenta de nuevo.",
-  
-  // Join List Dialog
-  join_existing: "Unirse a Lista Existente",
-  join_description: "Ingresa tu nombre y el código de compartir para unirte a una lista existente.",
-  first_name: "Nombre",
-  enter_first_name: "Ingresa tu nombre",
-  share_code: "Código de Compartir",
-  enter_share_code: "Ingresa el código",
-  joining: "Uniéndose...",
-  already_member: "Ya eres miembro de esta lista.",
-  joined_success: "Te has unido a la lista.",
-  failed_join: "Error al unirse. Verifica el código e intenta de nuevo.",
-  
-  // Grocery List
-  back: "Volver",
-  share_code_copied: "¡Código copiado!",
-  failed_copy: "Error al copiar código",
-  add_new_item: "Añadir Artículo",
-  enter_item_name: "Ingresa el nombre del artículo...",
-  adding_item: "Añadiendo...",
-  add_item: "Añadir",
-  loading_items: "Cargando artículos...",
-  no_items: "No hay artículos en la lista. ¡Añade algunos para comenzar!",
-  delete_confirm: "¿Estás seguro?",
-  delete_item_confirm: "Esto eliminará permanentemente este artículo de tu lista.",
-  cancel: "Cancelar",
-  delete: "Eliminar",
-  item_deleted: "Artículo eliminado",
-  failed_delete: "Error al eliminar artículo",
-  
-  // Language Selection
-  select_language: "Seleccionar Idioma",
-  language_updated: "Idioma actualizado a Español",
-  failed_language: "Error al actualizar preferencia de idioma",
-
-  // List Actions Dialog
-  list_actions: "Acciones de Lista",
-  manage_list_settings: "Administra la configuración y opciones de compartir de tu lista",
-  copy_share_code: "Copiar Código de Compartir",
-  delete_list: "Eliminar Lista",
-  share_code_success: "¡Código copiado! Comparte este código con otros para colaborar en esta lista.",
-
-  // Delete List Dialog
-  delete_list_confirm: "¿Estás absolutamente seguro?",
-  delete_list_warning: "Esta acción no se puede deshacer. Esto eliminará permanentemente la lista y todos sus elementos.",
-  type_list_name: "Por favor escribe {listName} para confirmar.",
-  delete_list_success: "La lista ha sido eliminada exitosamente.",
-  delete_list_error: "Error al eliminar la lista. Por favor, intenta de nuevo.",
-
-  // List Members Dialog
-  list_members: "Miembros de la Lista",
   loading: "Cargando...",
-  no_members: "No se encontraron miembros",
+  loading_lists: "Cargando listas...",
+  loading_items: "Cargando artículos...",
+  no_items: "Aún no hay artículos",
+  list_members: "Miembros de la Lista",
   anonymous_user: "Usuario Anónimo",
+  no_members: "Aún no hay miembros",
+  share_list: "Compartir Lista",
+  delete_list: "Eliminar Lista",
+  view_list: "Ver Lista",
+  copy_code: "Copiar Código",
+  code_copied: "¡Código copiado!",
+  join: "Unirse",
+  create: "Crear",
+  cancel: "Cancelar",
+  list_name: "Nombre de la Lista",
+  share_code: "Código de Compartir",
+  enter_share_code: "Ingrese el código de compartir",
+  add_item: "Agregar Artículo",
+  item_name: "Nombre del Artículo",
+  add: "Agregar",
+  delete_confirmation: "¿Estás seguro de que quieres eliminar esta lista?",
+  delete_warning: "Esto eliminará permanentemente la lista y todos sus artículos.",
+  type_delete: 'Escribe "ELIMINAR" para confirmar',
+  delete: "Eliminar",
+  invalid_share_code: "Código de compartir inválido",
+  list_not_found: "Lista no encontrada",
+  already_member: "Ya eres miembro de esta lista",
+  joined_list: "Te has unido a la lista",
+  list_created: "Lista creada exitosamente",
+  list_deleted: "Lista eliminada exitosamente",
+  error_joining: "Error al unirse a la lista",
+  error_creating: "Error al crear la lista",
+  error_deleting: "Error al eliminar la lista",
 };
+
+export default translations;
