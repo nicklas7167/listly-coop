@@ -28,10 +28,8 @@ export async function checkListExists(shareCode: string) {
   console.log("Checking list with share code:", shareCode);
   
   const { data, error } = await supabase
-    .from("lists")
-    .select("*")
-    .eq("share_code", shareCode.trim())
-    .maybeSingle();
+    .rpc('get_list_by_share_code', { p_share_code: shareCode })
+    .single();
 
   if (error) {
     console.error("Error checking list existence:", error);
@@ -75,15 +73,13 @@ export async function joinList(shareCode: string) {
       return { alreadyMember: true };
     }
 
-    // Set the share code in the request headers for RLS policy
+    // Insert new membership using RPC to handle share code verification
     const { error: insertError } = await supabase
-      .from("list_members")
-      .insert({
-        list_id: list.id,
-        user_id: user.id
-      })
-      .select()
-      .single();
+      .rpc('join_list_with_share_code', {
+        p_list_id: list.id,
+        p_user_id: user.id,
+        p_share_code: shareCode
+      });
 
     if (insertError) {
       console.error("Error inserting membership:", insertError);

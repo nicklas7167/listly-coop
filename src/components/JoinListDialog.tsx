@@ -13,7 +13,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { checkListExists, joinList } from "@/utils/listOperations";
-import { supabase } from "@/integrations/supabase/client";
 
 interface JoinListDialogProps {
   open: boolean;
@@ -31,17 +30,11 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
     setLoading(true);
 
     try {
-      // Set the share code in the request headers for RLS policy
-      supabase.headers = {
-        ...supabase.headers,
-        'share-code': shareCode.trim()
-      };
-
       console.log("Starting join process with share code:", shareCode);
-      const list = await checkListExists(shareCode);
+      const list = await checkListExists(shareCode.trim());
       console.log("Found list:", list);
       
-      const { alreadyMember } = await joinList(shareCode);
+      const { alreadyMember } = await joinList(shareCode.trim());
       console.log("Join result - already member:", alreadyMember);
 
       if (alreadyMember) {
