@@ -1,0 +1,16 @@
+{
+  "groceryList": {
+    "title": "Lista de Compras",
+    "back": "Volver",
+    "shareCode": "Código para Compartir",
+    "addItem": "Agregar Item",
+    "noItems": "No hay items en la lista. ¡Agrega algunos para comenzar!",
+    "loading": "Cargando items..."
+  },
+  "common": {
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "confirm": "¿Estás seguro?",
+    "copied": "Código copiado"
+  }
+}
