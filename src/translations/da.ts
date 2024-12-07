@@ -1,4 +1,4 @@
-const danishTranslations = {
+export const danishTranslations = {
   // Dashboard translations
   my_lists: "Mine Lister",
   create_list: "Opret Liste",
@@ -8,6 +8,7 @@ const danishTranslations = {
   create_first: "Opret din første liste eller tilslut dig en eksisterende for at komme i gang.",
   loading_lists: "Indlæser dine lister...",
   error_loading: "Fejl Ved Indlæsning",
+  try_refresh: "Prøv at genindlæse siden.",
   name: "Navn",
   items: "Varer",
   actions: "Handlinger",
@@ -75,5 +76,3 @@ const danishTranslations = {
   no_members: "Ingen medlemmer fundet",
   anonymous_user: "Anonym Bruger",
 };
-
-export default danishTranslations;

@@ -1,4 +1,4 @@
-const englishTranslations = {
+export const englishTranslations = {
   // Dashboard translations
   my_lists: "My Lists",
   create_list: "Create List",
@@ -8,6 +8,7 @@ const englishTranslations = {
   create_first: "Create your first list or join an existing one to get started.",
   loading_lists: "Loading your lists...",
   error_loading: "Error Loading Data",
+  try_refresh: "Try refreshing the page.",
   name: "Name",
   items: "Items",
   actions: "Actions",
@@ -75,5 +76,3 @@ const englishTranslations = {
   no_members: "No members found",
   anonymous_user: "Anonymous User",
 };
-
-export default englishTranslations;

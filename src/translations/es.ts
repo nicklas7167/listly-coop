@@ -1,4 +1,4 @@
-const spanishTranslations = {
+export const spanishTranslations = {
   // Dashboard translations
   my_lists: "Mis Listas",
   create_list: "Crear Lista",
@@ -8,6 +8,7 @@ const spanishTranslations = {
   create_first: "Crea tu primera lista o únete a una existente para comenzar.",
   loading_lists: "Cargando tus listas...",
   error_loading: "Error al Cargar Datos",
+  try_refresh: "Intenta refrescar la página.",
   name: "Nombre",
   items: "Artículos",
   actions: "Acciones",
@@ -75,5 +76,3 @@ const spanishTranslations = {
   no_members: "No se encontraron miembros",
   anonymous_user: "Usuario Anónimo",
 };
-
-export default spanishTranslations;

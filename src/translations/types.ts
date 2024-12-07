@@ -10,6 +10,7 @@ export interface Translations {
   create_first: string;
   loading_lists: string;
   error_loading: string;
+  try_refresh: string;
   name: string;
   items: string;
   actions: string;
