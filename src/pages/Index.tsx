@@ -42,26 +42,28 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30">
-      <div className="container mx-auto px-4 py-16 flex flex-col items-center animate-fade-in">
-        <h1 className="text-4xl md:text-6xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent mb-6">
+      <div className="container mx-auto px-4 py-8 md:py-16 flex flex-col items-center animate-fade-in">
+        <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent mb-4 md:mb-6 px-4">
           Grocery List
         </h1>
-        <p className="text-lg md:text-xl text-gray-600 text-center max-w-2xl mb-8">
+        <p className="text-base md:text-lg lg:text-xl text-gray-600 text-center max-w-2xl mb-6 md:mb-8 px-4">
           The smart way to manage grocery shopping with family and friends.
           Never forget items or buy duplicates again!
         </p>
 
-        <div className="flex flex-col md:flex-row gap-4 items-center mb-12">
-          <div className="flex items-center gap-2 text-primary">
-            <Globe2 className="w-5 h-5" />
-            <span className="text-sm font-medium">Available in:</span>
-            <span className="text-sm">🇬🇧 English</span>
-            <span className="text-sm">🇪🇸 Español</span>
-            <span className="text-sm">🇩🇰 Dansk</span>
+        <div className="w-full flex justify-center mb-8 md:mb-12 px-4">
+          <div className="flex flex-wrap items-center gap-2 text-primary bg-white/50 p-3 rounded-lg shadow-sm">
+            <Globe2 className="w-4 h-4 md:w-5 md:h-5" />
+            <span className="text-xs md:text-sm font-medium">Available in:</span>
+            <div className="flex flex-wrap gap-2">
+              <span className="text-xs md:text-sm bg-white px-2 py-1 rounded">🇬🇧 English</span>
+              <span className="text-xs md:text-sm bg-white px-2 py-1 rounded">🇪🇸 Español</span>
+              <span className="text-xs md:text-sm bg-white px-2 py-1 rounded">🇩🇰 Dansk</span>
+            </div>
           </div>
         </div>
 
-        <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-8">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-4 md:p-8 mx-4">
           <Auth
             supabaseClient={supabase}
             appearance={{
@@ -109,16 +111,16 @@ const Index = () => {
           />
         </div>
 
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
+        <div className="mt-8 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 w-full max-w-5xl px-4">
           {features.map((feature, index) => (
             <div
               key={feature.title}
-              className="p-6 rounded-xl bg-white shadow-lg animate-scale-in"
+              className="p-4 md:p-6 rounded-xl bg-white shadow-lg animate-scale-in hover:shadow-xl transition-shadow"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <feature.icon className="w-12 h-12 text-primary mb-4" />
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
+              <feature.icon className="w-8 h-8 md:w-12 md:h-12 text-primary mb-3 md:mb-4" />
+              <h3 className="text-lg md:text-xl font-semibold mb-2">{feature.title}</h3>
+              <p className="text-sm md:text-base text-gray-600">{feature.description}</p>
             </div>
           ))}
         </div>
