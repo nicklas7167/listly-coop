@@ -14,6 +14,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       position="bottom-center"
       toastOptions={{
+        duration: isMobile ? 2000 : 3000,
         classNames: {
           toast: [
             "group toast",

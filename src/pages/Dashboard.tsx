@@ -6,7 +6,7 @@ import { PlusCircle, Share2, LogOut } from "lucide-react";
 import { CreateListDialog } from "@/components/CreateListDialog";
 import { JoinListDialog } from "@/components/JoinListDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { ListsTable } from "@/components/ListsTable";
 import { useQuery } from "@tanstack/react-query";
 
@@ -14,7 +14,6 @@ const Dashboard = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showJoinDialog, setShowJoinDialog] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -39,11 +38,7 @@ const Dashboard = () => {
 
       if (error) {
         console.error("Error fetching lists:", error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch your lists. Please try again.",
-          variant: "destructive",
-        });
+        toast.error("Failed to fetch your lists. Please try again.");
         throw error;
       }
 
