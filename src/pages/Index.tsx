@@ -68,15 +68,29 @@ const Index = () => {
               },
             }}
             providers={[]}
-            onError={(error) => {
-              console.error('Auth error:', error);
-              if (error.message.includes('Email not confirmed')) {
-                toast.error('Please check your email to confirm your account');
-              } else if (error.message.includes('Invalid login credentials')) {
-                toast.error('Invalid email or password');
-              } else {
-                toast.error(error.message);
-              }
+            localization={{
+              variables: {
+                sign_in: {
+                  email_input_placeholder: "Your email address",
+                  password_input_placeholder: "Your password",
+                  email_label: "Email",
+                  password_label: "Password",
+                  button_label: "Sign in",
+                  loading_button_label: "Signing in ...",
+                  social_provider_text: "Sign in with {{provider}}",
+                  link_text: "Already have an account? Sign in",
+                },
+                sign_up: {
+                  email_input_placeholder: "Your email address",
+                  password_input_placeholder: "Your password",
+                  email_label: "Email",
+                  password_label: "Password",
+                  button_label: "Sign up",
+                  loading_button_label: "Signing up ...",
+                  social_provider_text: "Sign up with {{provider}}",
+                  link_text: "Don't have an account? Sign up",
+                },
+              },
             }}
           />
         </div>
