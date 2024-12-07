@@ -9,6 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      grocery_items: {
+        Row: {
+          completed: boolean
+          created_at: string
+          id: string
+          list_id: string
+          name: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          id?: string
+          list_id: string
+          name: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          id?: string
+          list_id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_list"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "lists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grocery_items_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       list_members: {
         Row: {
           joined_at: string

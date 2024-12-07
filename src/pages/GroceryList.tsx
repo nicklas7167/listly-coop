@@ -5,6 +5,7 @@ import { ArrowLeft, Copy, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -17,16 +18,18 @@ interface GroceryItem {
   id: string;
   name: string;
   completed: boolean;
+  list_id: string;
 }
 
 const GroceryList = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const [newItem, setNewItem] = useState("");
-  const [items, setItems] = useState<GroceryItem[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [shareCode, setShareCode] = useState<string>("");
+  const queryClient = useQueryClient();
 
+  // Fetch share code
   useEffect(() => {
     const fetchList = async () => {
       if (!id) return;
@@ -50,27 +53,95 @@ const GroceryList = () => {
     fetchList();
   }, [id]);
 
-  const handleAddItem = (e: React.FormEvent) => {
+  // Fetch items query
+  const { data: items = [], isLoading } = useQuery({
+    queryKey: ['groceryItems', id],
+    queryFn: async () => {
+      if (!id) return [];
+      const { data, error } = await supabase
+        .from('grocery_items')
+        .select('*')
+        .eq('list_id', id)
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching items:', error);
+        throw error;
+      }
+      return data as GroceryItem[];
+    },
+  });
+
+  // Add item mutation
+  const addItemMutation = useMutation({
+    mutationFn: async (name: string) => {
+      if (!id) throw new Error('No list ID provided');
+      const { data, error } = await supabase
+        .from('grocery_items')
+        .insert([{ name, list_id: id }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['groceryItems', id] });
+      toast({
+        title: "Item added",
+        description: "The item has been added to your list.",
+      });
+    },
+    onError: (error) => {
+      console.error('Error adding item:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add item. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Toggle item mutation
+  const toggleItemMutation = useMutation({
+    mutationFn: async ({ itemId, completed }: { itemId: string; completed: boolean }) => {
+      const { data, error } = await supabase
+        .from('grocery_items')
+        .update({ completed })
+        .eq('id', itemId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['groceryItems', id] });
+    },
+    onError: (error) => {
+      console.error('Error toggling item:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update item. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleAddItem = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newItem.trim()) return;
 
-    const item: GroceryItem = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: newItem.trim(),
-      completed: false,
-    };
-
-    setItems([...items, item]);
+    await addItemMutation.mutateAsync(newItem.trim());
     setNewItem("");
     setDialogOpen(false);
   };
 
-  const toggleItem = (id: string) => {
-    setItems(
-      items.map((item) =>
-        item.id === id ? { ...item, completed: !item.completed } : item
-      )
-    );
+  const toggleItem = async (itemId: string, currentStatus: boolean) => {
+    await toggleItemMutation.mutateAsync({
+      itemId,
+      completed: !currentStatus,
+    });
   };
 
   const copyShareCode = async () => {
@@ -95,7 +166,7 @@ const GroceryList = () => {
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30 p-4">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-8">
-          <Link to="/">
+          <Link to="/dashboard">
             <Button variant="ghost" className="flex items-center gap-2">
               <ArrowLeft className="w-4 h-4" />
               Back
@@ -131,36 +202,49 @@ const GroceryList = () => {
                     placeholder="Enter item name..."
                     autoFocus
                   />
-                  <Button type="submit" className="w-full" disabled={!newItem.trim()}>
-                    Add Item
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={!newItem.trim() || addItemMutation.isPending}
+                  >
+                    {addItemMutation.isPending ? "Adding..." : "Add Item"}
                   </Button>
                 </form>
               </DialogContent>
             </Dialog>
           </div>
 
-          <div className="space-y-2">
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-50 transition-colors animate-fade-in"
-              >
-                <input
-                  type="checkbox"
-                  checked={item.completed}
-                  onChange={() => toggleItem(item.id)}
-                  className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
-                />
-                <span
-                  className={`flex-1 ${
-                    item.completed ? "line-through text-gray-400" : ""
-                  }`}
+          {isLoading ? (
+            <div className="text-center py-4">Loading items...</div>
+          ) : (
+            <div className="space-y-2">
+              {items.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-50 transition-colors animate-fade-in"
                 >
-                  {item.name}
-                </span>
-              </div>
-            ))}
-          </div>
+                  <input
+                    type="checkbox"
+                    checked={item.completed}
+                    onChange={() => toggleItem(item.id, item.completed)}
+                    className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                  <span
+                    className={`flex-1 ${
+                      item.completed ? "line-through text-gray-400" : ""
+                    }`}
+                  >
+                    {item.name}
+                  </span>
+                </div>
+              ))}
+              {items.length === 0 && (
+                <div className="text-center py-4 text-gray-500">
+                  No items in the list yet. Add some items to get started!
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
