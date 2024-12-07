@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Copy, Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,30 @@ const GroceryList = () => {
   const [newItem, setNewItem] = useState("");
   const [items, setItems] = useState<GroceryItem[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [shareCode, setShareCode] = useState<string>("");
+
+  useEffect(() => {
+    const fetchList = async () => {
+      if (!id) return;
+      
+      const { data, error } = await supabase
+        .from("lists")
+        .select("share_code")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching list:", error);
+        return;
+      }
+
+      if (data) {
+        setShareCode(data.share_code);
+      }
+    };
+
+    fetchList();
+  }, [id]);
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,10 +74,10 @@ const GroceryList = () => {
   };
 
   const copyShareCode = async () => {
-    if (!id) return;
+    if (!shareCode) return;
     
     try {
-      await navigator.clipboard.writeText(id);
+      await navigator.clipboard.writeText(shareCode);
       toast({
         title: "Share code copied!",
         description: "Share this code with others to collaborate on this list.",
