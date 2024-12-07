@@ -42,8 +42,11 @@ export function DeleteListDialog({ list, currentUserId, open, onOpenChange }: De
       if (error) throw error;
 
       if (data) {
-        queryClient.invalidateQueries({ queryKey: ['lists'] });
-        queryClient.invalidateQueries({ queryKey: ['itemCounts'] });
+        // Immediately invalidate both queries to trigger a refresh
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['lists'] }),
+          queryClient.invalidateQueries({ queryKey: ['itemCounts'] })
+        ]);
         
         toast({
           title: "List deleted",
