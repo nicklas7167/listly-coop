@@ -7,11 +7,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface List {
   id: string;
@@ -35,8 +34,7 @@ export function ListsTable({ lists, loading }: ListsTableProps) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('grocery_items')
-        .select('list_id, count')
-        .select('list_id, count(*)', { count: 'exact' })
+        .select('list_id, count(*)', { count: 'exact', head: false })
         .group('list_id');
 
       if (error) throw error;
@@ -99,8 +97,8 @@ export function ListsTable({ lists, loading }: ListsTableProps) {
                 {itemCounts?.[list.id] || 0}
               </TableCell>
               <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                <Popover>
+                  <PopoverTrigger asChild onClick={(e) => e.stopPropagation()}>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -109,17 +107,31 @@ export function ListsTable({ lists, loading }: ListsTableProps) {
                       <MoreVertical className="h-4 w-4" />
                       <span className="sr-only">Open menu</span>
                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-                    <DropdownMenuItem onClick={(e) => copyShareCode(list.share_code, e)}>
-                      <Share2 className="mr-2 h-4 w-4" />
-                      <span>Copy Share Code</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate(`/list/${list.id}`)}>
-                      View List
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  </PopoverTrigger>
+                  <PopoverContent 
+                    className="w-48" 
+                    align="end"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex flex-col gap-1">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={(e) => copyShareCode(list.share_code, e)}
+                      >
+                        <Share2 className="mr-2 h-4 w-4" />
+                        <span>Copy Share Code</span>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={() => navigate(`/list/${list.id}`)}
+                      >
+                        View List
+                      </Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </TableCell>
             </TableRow>
           ))}
