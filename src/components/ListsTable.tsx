@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ListTableRow } from "./lists/ListTableRow";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface List {
   id: string;
@@ -19,8 +20,8 @@ interface ListsTableProps {
 
 export function ListsTable({ lists, loading }: ListsTableProps) {
   const navigate = useNavigate();
+  const { translations } = useLanguage();
 
-  // Get current user
   const { data: currentUser, error: userError } = useQuery({
     queryKey: ['currentUser'],
     queryFn: async () => {
@@ -38,7 +39,6 @@ export function ListsTable({ lists, loading }: ListsTableProps) {
     },
   });
 
-  // Fetch item counts for each list
   const { data: itemCounts, error: itemCountsError } = useQuery({
     queryKey: ['itemCounts'],
     queryFn: async () => {
@@ -78,24 +78,24 @@ export function ListsTable({ lists, loading }: ListsTableProps) {
   if (userError || itemCountsError) {
     return (
       <div className="text-center py-8 bg-white rounded-lg shadow">
-        <h3 className="text-xl font-semibold mb-2">Error Loading Data</h3>
+        <h3 className="text-xl font-semibold mb-2">{translations.error_loading}</h3>
         <p className="text-gray-600 mb-4">
-          Please try refreshing the page.
+          {translations.try_refresh}
         </p>
       </div>
     );
   }
 
   if (loading) {
-    return <div className="text-center py-8">Loading your lists...</div>;
+    return <div className="text-center py-8">{translations.loading_lists}</div>;
   }
 
   if (!lists || lists.length === 0) {
     return (
       <div className="text-center py-8 bg-white rounded-lg shadow">
-        <h3 className="text-xl font-semibold mb-2">No Lists Yet</h3>
+        <h3 className="text-xl font-semibold mb-2">{translations.no_lists}</h3>
         <p className="text-gray-600 mb-4">
-          Create your first list or join an existing one to get started.
+          {translations.create_first}
         </p>
       </div>
     );
@@ -106,9 +106,9 @@ export function ListsTable({ lists, loading }: ListsTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead className="text-right">Items</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>{translations.name}</TableHead>
+            <TableHead className="text-right">{translations.items}</TableHead>
+            <TableHead className="text-right">{translations.actions}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

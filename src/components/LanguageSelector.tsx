@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Globe, Flag } from "lucide-react";
+import { Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const languages = [
   { code: "en", name: "English", flag: "🇬🇧" },
@@ -20,6 +21,7 @@ const languages = [
 export function LanguageSelector() {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const { setLanguage } = useLanguage();
 
   const updateLanguage = async (languageCode: string) => {
     setIsLoading(true);
@@ -34,6 +36,7 @@ export function LanguageSelector() {
 
       if (updateError) throw updateError;
 
+      setLanguage(languageCode as "en" | "es" | "da");
       toast.success(`Language updated to ${languages.find(l => l.code === languageCode)?.name}`);
       setOpen(false);
     } catch (error) {

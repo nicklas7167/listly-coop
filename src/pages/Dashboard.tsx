@@ -10,12 +10,14 @@ import { toast } from "sonner";
 import { ListsTable } from "@/components/ListsTable";
 import { useQuery } from "@tanstack/react-query";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Dashboard = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showJoinDialog, setShowJoinDialog] = useState(false);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { translations } = useLanguage();
 
   useEffect(() => {
     const checkSession = async () => {
@@ -27,7 +29,6 @@ const Dashboard = () => {
     checkSession();
   }, [navigate]);
 
-  // Fetch lists using React Query
   const { data: lists, isLoading } = useQuery({
     queryKey: ['lists'],
     queryFn: async () => {
@@ -57,7 +58,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30 p-4 sm:p-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold">My Lists</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">{translations.my_lists}</h1>
           <div className="flex flex-wrap gap-2 sm:gap-4 w-full sm:w-auto">
             <Button
               onClick={() => setShowCreateDialog(true)}
@@ -65,7 +66,7 @@ const Dashboard = () => {
               size={isMobile ? "sm" : "default"}
             >
               <PlusCircle className="w-4 h-4" />
-              {!isMobile && "Create List"}
+              {!isMobile && translations.create_list}
             </Button>
             <Button
               variant="outline"
@@ -74,7 +75,7 @@ const Dashboard = () => {
               size={isMobile ? "sm" : "default"}
             >
               <Share2 className="w-4 h-4" />
-              {!isMobile && "Join List"}
+              {!isMobile && translations.join_list}
             </Button>
             <LanguageSelector />
             <Button
@@ -84,7 +85,7 @@ const Dashboard = () => {
               size={isMobile ? "sm" : "default"}
             >
               <LogOut className="w-4 h-4" />
-              {!isMobile && "Sign Out"}
+              {!isMobile && translations.sign_out}
             </Button>
           </div>
         </div>
