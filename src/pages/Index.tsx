@@ -68,6 +68,16 @@ const Index = () => {
               },
             }}
             providers={[]}
+            onError={(error) => {
+              console.error('Auth error:', error);
+              if (error.message.includes('Email not confirmed')) {
+                toast.error('Please check your email to confirm your account');
+              } else if (error.message.includes('Invalid login credentials')) {
+                toast.error('Invalid email or password');
+              } else {
+                toast.error(error.message);
+              }
+            }}
           />
         </div>
 

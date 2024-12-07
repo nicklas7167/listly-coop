@@ -101,19 +101,19 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
-          first_name: string
+          first_name: string | null
           id: string
           preferred_language: string
         }
         Insert: {
           created_at?: string
-          first_name: string
+          first_name?: string | null
           id: string
           preferred_language?: string
         }
         Update: {
           created_at?: string
-          first_name?: string
+          first_name?: string | null
           id?: string
           preferred_language?: string
         }
