@@ -6,8 +6,6 @@ import { GroceryHeader } from "@/components/grocery/GroceryHeader";
 import { AddItemDialog } from "@/components/grocery/AddItemDialog";
 import { GroceryItem } from "@/components/grocery/GroceryItem";
 import { AnimatePresence } from "framer-motion";
-import { useTranslation } from "react-i18next";
-import { LanguageSelector } from "@/components/LanguageSelector";
 
 interface GroceryItem {
   id: string;
@@ -17,7 +15,6 @@ interface GroceryItem {
 }
 
 const GroceryList = () => {
-  const { t } = useTranslation();
   const { id } = useParams();
   const [shareCode, setShareCode] = useState<string>("");
   const queryClient = useQueryClient();
@@ -130,14 +127,11 @@ const GroceryList = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30 p-4">
       <div className="max-w-2xl mx-auto">
-        <div className="flex items-center justify-between mb-4">
-          <GroceryHeader shareCode={shareCode} />
-          <LanguageSelector />
-        </div>
+        <GroceryHeader shareCode={shareCode} />
 
         <div className="bg-white rounded-xl shadow-lg p-6 animate-scale-in">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold">{listDetails?.name || t('groceryList.loading')}</h1>
+            <h1 className="text-2xl font-bold">{listDetails?.name || "Loading..."}</h1>
             <AddItemDialog 
               onAddItem={handleAddItem}
               isAdding={false}
@@ -145,7 +139,7 @@ const GroceryList = () => {
           </div>
 
           {isLoading ? (
-            <div className="text-center py-4">{t('groceryList.loading')}</div>
+            <div className="text-center py-4">Loading items...</div>
           ) : (
             <div className="space-y-2">
               <AnimatePresence initial={false}>
@@ -161,7 +155,7 @@ const GroceryList = () => {
               </AnimatePresence>
               {items.length === 0 && (
                 <div className="text-center py-4 text-gray-500">
-                  {t('groceryList.noItems')}
+                  No items in the list yet. Add some items to get started!
                 </div>
               )}
             </div>
