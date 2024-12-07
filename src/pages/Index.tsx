@@ -51,7 +51,7 @@ const Index = () => {
         {/* Hero Section */}
         <div className="w-full max-w-4xl mx-auto text-center space-y-6 md:space-y-8 animate-fade-in">
           <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary bg-300% animate-gradient">
-            Grocery List
+            Listify
           </h1>
           <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-4 leading-relaxed">
             The smart way to manage grocery shopping with family and friends.
