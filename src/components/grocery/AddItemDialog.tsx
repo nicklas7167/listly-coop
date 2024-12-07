@@ -49,27 +49,43 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
           <DialogTitle>{translations.add_new_item}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
-          <Input
-            value={newItem}
-            onChange={(e) => setNewItem(e.target.value)}
-            placeholder={translations.enter_item_name}
-            autoFocus
-          />
+          <div className="space-y-2">
+            <label htmlFor="item-name" className="text-sm font-medium">
+              Item Name
+            </label>
+            <Input
+              id="item-name"
+              value={newItem}
+              onChange={(e) => setNewItem(e.target.value)}
+              placeholder="e.g., Milk, Bread, Eggs"
+              autoFocus
+            />
+          </div>
           <div className="flex gap-4">
-            <div className="flex-1">
+            <div className="flex-1 space-y-2">
+              <label className="text-sm font-medium">
+                Store
+              </label>
               <StoreSelect
                 listId={listId || ""}
                 value={store}
                 onChange={setStore}
               />
             </div>
-            <Input
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              placeholder={translations.quantity}
-              className="w-24"
-            />
+            <div className="space-y-2">
+              <label htmlFor="quantity" className="text-sm font-medium">
+                Quantity
+              </label>
+              <Input
+                id="quantity"
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                placeholder="0"
+                className="w-24"
+                min="0"
+              />
+            </div>
           </div>
           <Button 
             type="submit" 

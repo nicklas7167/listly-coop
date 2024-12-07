@@ -73,7 +73,7 @@ export function StoreSelect({ listId, value, onChange }: StoreSelectProps) {
           variant="outline" 
           className="w-full justify-start text-left font-normal"
         >
-          {value || translations.select_store}
+          {value || "Select a store where to buy this item"}
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -105,7 +105,7 @@ export function StoreSelect({ listId, value, onChange }: StoreSelectProps) {
               <Input
                 value={newStore}
                 onChange={(e) => setNewStore(e.target.value)}
-                placeholder={translations.enter_store_name}
+                placeholder="e.g., Walmart, Target, Costco"
                 className="flex-1"
                 autoFocus
               />
