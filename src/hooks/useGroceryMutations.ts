@@ -58,17 +58,12 @@ export function useGroceryMutations(listId: string | undefined) {
 
   const deleteItemMutation = useMutation({
     mutationFn: async (itemId: string) => {
-      console.log('Deleting item:', itemId);
       const { error } = await supabase
         .from('grocery_items')
         .delete()
         .eq('id', itemId);
 
-      if (error) {
-        console.error('Error in delete mutation:', error);
-        throw error;
-      }
-      return itemId;
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groceryItems', listId] });
