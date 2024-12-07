@@ -16,7 +16,6 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session) {
@@ -24,7 +23,6 @@ const Index = () => {
       }
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -39,7 +37,7 @@ const Index = () => {
   }, [navigate]);
 
   if (session) {
-    return null; // Will redirect to dashboard
+    return null;
   }
 
   return (
@@ -65,6 +63,11 @@ const Index = () => {
                     brandAccent: 'hsl(var(--primary))',
                   },
                 },
+              },
+              style: {
+                button: { background: 'hsl(var(--primary))', color: 'white' },
+                anchor: { color: 'hsl(var(--primary))' },
+                message: { color: 'hsl(var(--destructive))' },
               },
             }}
             providers={[]}
