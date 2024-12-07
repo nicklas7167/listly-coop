@@ -1,5 +1,6 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { ListActionsDialog } from "./ListActionsDialog";
+import { MoreVertical } from "lucide-react";
 
 interface ListTableRowProps {
   list: {
@@ -23,7 +24,9 @@ export function ListTableRow({ list, itemCount, currentUserId, onRowClick }: Lis
       <TableCell className="font-medium">{list.name}</TableCell>
       <TableCell className="text-right">{itemCount}</TableCell>
       <TableCell className="text-right">
-        <ListActionsDialog list={list} currentUserId={currentUserId} />
+        <ListActionsDialog list={list} currentUserId={currentUserId}>
+          <MoreVertical className="h-4 w-4" />
+        </ListActionsDialog>
       </TableCell>
     </TableRow>
   );

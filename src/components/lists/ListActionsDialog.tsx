@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Share2, Trash2 } from "lucide-react";
@@ -22,9 +22,10 @@ interface ListActionsDialogProps {
     owner_id: string;
   };
   currentUserId?: string;
+  children: ReactNode;
 }
 
-export function ListActionsDialog({ list, currentUserId }: ListActionsDialogProps) {
+export function ListActionsDialog({ list, currentUserId, children }: ListActionsDialogProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [confirmationText, setConfirmationText] = useState("");
   const { toast } = useToast();
@@ -79,11 +80,11 @@ export function ListActionsDialog({ list, currentUserId }: ListActionsDialogProp
   return (
     <Dialog>
       <DialogTrigger asChild onClick={(e) => e.stopPropagation()}>
-        <Button variant="ghost" size="sm">
-          Actions
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          {children}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>List Actions</DialogTitle>
           <DialogDescription>
@@ -113,7 +114,7 @@ export function ListActionsDialog({ list, currentUserId }: ListActionsDialogProp
       </DialogContent>
 
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
+        <DialogContent onClick={(e) => e.stopPropagation()}>
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
             <DialogDescription>
