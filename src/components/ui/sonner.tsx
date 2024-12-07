@@ -28,6 +28,10 @@ const Toaster = ({ ...props }: ToasterProps) => {
               "group-[.toaster]:border-t",
               "group-[.toaster]:p-4",
               "group-[.toaster]:shadow-up",
+              "group-[.toaster]:fixed",
+              "group-[.toaster]:bottom-0",
+              "group-[.toaster]:left-0",
+              "group-[.toaster]:right-0",
             ].join(" ") : [
               "group-[.toaster]:shadow-lg",
             ].join(" ")
