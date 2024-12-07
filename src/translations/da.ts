@@ -75,12 +75,4 @@ export const danishTranslations = {
   loading: "Indlæser...",
   no_members: "Ingen medlemmer fundet",
   anonymous_user: "Anonym Bruger",
-
-  // Store Selection
-  select_store: "Vælg Butik",
-  enter_store_name: "Indtast butiksnavn",
-  quantity: "Antal",
-  add_store: "Tilføj Butik",
-  stores: "Butikker",
-  no_stores: "Ingen butikker tilføjet endnu",
 };

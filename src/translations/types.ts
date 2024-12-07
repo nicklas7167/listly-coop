@@ -77,12 +77,4 @@ export interface Translations {
   loading: string;
   no_members: string;
   anonymous_user: string;
-
-  // Store Selection
-  select_store: string;
-  enter_store_name: string;
-  quantity: string;
-  add_store: string;
-  stores: string;
-  no_stores: string;
 }

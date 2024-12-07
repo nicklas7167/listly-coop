@@ -3,12 +3,12 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -22,7 +22,6 @@ interface StoreSelectProps {
 export function StoreSelect({ listId, value, onChange }: StoreSelectProps) {
   const [newStore, setNewStore] = useState("");
   const [isAdding, setIsAdding] = useState(false);
-  const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const { translations } = useLanguage();
 
@@ -55,82 +54,56 @@ export function StoreSelect({ listId, value, onChange }: StoreSelectProps) {
       onChange(newStore.trim());
       setNewStore("");
       setIsAdding(false);
-      setOpen(false);
     } catch (error) {
       console.error('Error adding store:', error);
     }
   };
 
-  const handleStoreSelect = (store: string) => {
-    onChange(store);
-    setOpen(false);
-  };
+  if (isAdding) {
+    return (
+      <div className="flex gap-2">
+        <Input
+          value={newStore}
+          onChange={(e) => setNewStore(e.target.value)}
+          placeholder={translations.enter_store_name}
+          className="flex-1"
+          autoFocus
+        />
+        <Button size="sm" onClick={handleAddStore}>
+          <Plus className="w-4 h-4" />
+        </Button>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          onClick={() => setIsAdding(false)}
+        >
+          {translations.cancel}
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button 
-          variant="outline" 
-          className="w-full justify-start text-left font-normal"
-        >
-          {value || translations.select_store}
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{translations.stores}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4">
-          {stores.length > 0 ? (
-            <div className="grid grid-cols-2 gap-2">
-              {stores.map((store) => (
-                <Button
-                  key={store}
-                  variant={value === store ? "default" : "outline"}
-                  className="w-full"
-                  onClick={() => handleStoreSelect(store)}
-                >
-                  {store}
-                </Button>
-              ))}
-            </div>
-          ) : (
-            <p className="text-center text-muted-foreground">
-              {translations.no_stores}
-            </p>
-          )}
-          
-          {isAdding ? (
-            <div className="flex gap-2">
-              <Input
-                value={newStore}
-                onChange={(e) => setNewStore(e.target.value)}
-                placeholder={translations.enter_store_name}
-                className="flex-1"
-                autoFocus
-              />
-              <Button onClick={handleAddStore}>
-                <Plus className="w-4 h-4" />
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => setIsAdding(false)}
-              >
-                {translations.cancel}
-              </Button>
-            </div>
-          ) : (
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => setIsAdding(true)}
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              {translations.add_store}
-            </Button>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
+    <div className="flex gap-2">
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className="flex-1">
+          <SelectValue placeholder={translations.select_store} />
+        </SelectTrigger>
+        <SelectContent>
+          {stores.map((store) => (
+            <SelectItem key={store} value={store}>
+              {store}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Button 
+        size="sm" 
+        variant="outline" 
+        onClick={() => setIsAdding(true)}
+      >
+        <Plus className="w-4 h-4" />
+      </Button>
+    </div>
   );
 }

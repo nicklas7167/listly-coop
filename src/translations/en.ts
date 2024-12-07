@@ -75,12 +75,4 @@ export const englishTranslations = {
   loading: "Loading...",
   no_members: "No members found",
   anonymous_user: "Anonymous User",
-
-  // Store Selection
-  select_store: "Select Store",
-  enter_store_name: "Enter store name",
-  quantity: "Quantity",
-  add_store: "Add Store",
-  stores: "Stores",
-  no_stores: "No stores added yet",
 };
