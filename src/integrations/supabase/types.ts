@@ -103,6 +103,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      delete_list_if_owner: {
+        Args: {
+          p_list_id: string
+          p_user_id: string
+        }
+        Returns: boolean
+      }
       get_list_by_share_code: {
         Args: {
           p_share_code: string
