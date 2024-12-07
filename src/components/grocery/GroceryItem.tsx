@@ -47,11 +47,17 @@ export function GroceryItem({ id, name, completed, onToggle }: GroceryItemProps)
   };
 
   return (
-    <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
+    <div 
+      onClick={() => onToggle(id, completed)}
+      className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors group cursor-pointer"
+    >
       <input
         type="checkbox"
         checked={completed}
-        onChange={() => onToggle(id, completed)}
+        onChange={(e) => {
+          e.stopPropagation(); // Prevent double triggering when clicking checkbox directly
+          onToggle(id, completed);
+        }}
         className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
       />
       <span className={`flex-1 ${completed ? "line-through text-gray-400" : ""}`}>
@@ -62,11 +68,12 @@ export function GroceryItem({ id, name, completed, onToggle }: GroceryItemProps)
           <button
             className="text-gray-400 hover:text-red-500 transition-colors ml-auto"
             aria-label="Delete item"
+            onClick={(e) => e.stopPropagation()} // Prevent row click when clicking delete
           >
             <Trash className="h-4 w-4" />
           </button>
         </AlertDialogTrigger>
-        <AlertDialogContent>
+        <AlertDialogContent onClick={(e) => e.stopPropagation()}> {/* Prevent row click when dialog is open */}
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
