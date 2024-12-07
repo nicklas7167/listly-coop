@@ -1,6 +1,4 @@
-import { Translations } from "./types";
-
-export const spanishTranslations: Translations = {
+const spanishTranslations = {
   // Dashboard translations
   my_lists: "Mis Listas",
   create_list: "Crear Lista",
@@ -10,7 +8,6 @@ export const spanishTranslations: Translations = {
   create_first: "Crea tu primera lista o únete a una existente para comenzar.",
   loading_lists: "Cargando tus listas...",
   error_loading: "Error al Cargar Datos",
-  try_refresh: "Por favor, intenta refrescar la página.",
   name: "Nombre",
   items: "Artículos",
   actions: "Acciones",
@@ -21,12 +18,14 @@ export const spanishTranslations: Translations = {
   creating: "Creando...",
   list_created: "Tu lista ha sido creada.",
   failed_create: "Error al crear la lista. Por favor, intenta de nuevo.",
+  first_name: "Nombre",
+  enter_first_name: "Ingresa tu nombre",
+  list_name: "Nombre de la Lista",
+  enter_list_name: "Ingresa un nombre para tu lista",
   
   // Join List Dialog
   join_existing: "Unirse a Lista Existente",
   join_description: "Ingresa tu nombre y el código de compartir para unirte a una lista existente.",
-  first_name: "Nombre",
-  enter_first_name: "Ingresa tu nombre",
   share_code: "Código de Compartir",
   enter_share_code: "Ingresa el código",
   joining: "Uniéndose...",
@@ -76,3 +75,5 @@ export const spanishTranslations: Translations = {
   no_members: "No se encontraron miembros",
   anonymous_user: "Usuario Anónimo",
 };
+
+export default spanishTranslations;

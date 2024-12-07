@@ -83,14 +83,14 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
-                {translations.name}
+                {translations.list_name}
               </Label>
               <Input
                 id="name"
                 value={listName}
                 onChange={(e) => setListName(e.target.value)}
                 className="col-span-3"
-                placeholder={translations.name}
+                placeholder={translations.enter_list_name}
                 required
                 disabled={loading}
               />

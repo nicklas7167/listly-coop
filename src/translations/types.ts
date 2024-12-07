@@ -22,6 +22,8 @@ export interface Translations {
   failed_create: string;
   first_name: string;
   enter_first_name: string;
+  list_name: string;
+  enter_list_name: string;
   
   // Join List Dialog
   join_existing: string;

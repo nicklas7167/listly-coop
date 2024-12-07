@@ -1,6 +1,4 @@
-import { Translations } from "./types";
-
-export const danishTranslations: Translations = {
+const danishTranslations = {
   // Dashboard translations
   my_lists: "Mine Lister",
   create_list: "Opret Liste",
@@ -10,7 +8,6 @@ export const danishTranslations: Translations = {
   create_first: "Opret din første liste eller tilslut dig en eksisterende for at komme i gang.",
   loading_lists: "Indlæser dine lister...",
   error_loading: "Fejl Ved Indlæsning",
-  try_refresh: "Prøv venligst at genindlæse siden.",
   name: "Navn",
   items: "Varer",
   actions: "Handlinger",
@@ -21,12 +18,14 @@ export const danishTranslations: Translations = {
   creating: "Opretter...",
   list_created: "Din liste er blevet oprettet.",
   failed_create: "Kunne ikke oprette liste. Prøv igen.",
+  first_name: "Fornavn",
+  enter_first_name: "Indtast dit fornavn",
+  list_name: "Listenavn",
+  enter_list_name: "Indtast et navn til din liste",
   
   // Join List Dialog
   join_existing: "Tilslut Eksisterende Liste",
   join_description: "Indtast dit navn og delingskoden for at tilslutte dig en eksisterende liste.",
-  first_name: "Fornavn",
-  enter_first_name: "Indtast dit fornavn",
   share_code: "Delingskode",
   enter_share_code: "Indtast delingskode",
   joining: "Tilslutter...",
@@ -76,3 +75,5 @@ export const danishTranslations: Translations = {
   no_members: "Ingen medlemmer fundet",
   anonymous_user: "Anonym Bruger",
 };
+
+export default danishTranslations;

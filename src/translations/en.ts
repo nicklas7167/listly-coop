@@ -1,6 +1,4 @@
-import { Translations } from "./types";
-
-export const englishTranslations: Translations = {
+const englishTranslations = {
   // Dashboard translations
   my_lists: "My Lists",
   create_list: "Create List",
@@ -10,7 +8,6 @@ export const englishTranslations: Translations = {
   create_first: "Create your first list or join an existing one to get started.",
   loading_lists: "Loading your lists...",
   error_loading: "Error Loading Data",
-  try_refresh: "Please try refreshing the page.",
   name: "Name",
   items: "Items",
   actions: "Actions",
@@ -21,12 +18,14 @@ export const englishTranslations: Translations = {
   creating: "Creating...",
   list_created: "Your list has been created.",
   failed_create: "Failed to create list. Please try again.",
+  first_name: "First Name",
+  enter_first_name: "Enter your first name",
+  list_name: "List Name",
+  enter_list_name: "Enter a name for your list",
   
   // Join List Dialog
   join_existing: "Join Existing List",
   join_description: "Enter your name and the share code to join an existing grocery list.",
-  first_name: "First Name",
-  enter_first_name: "Enter your first name",
   share_code: "Share Code",
   enter_share_code: "Enter share code",
   joining: "Joining...",
@@ -76,3 +75,5 @@ export const englishTranslations: Translations = {
   no_members: "No members found",
   anonymous_user: "Anonymous User",
 };
+
+export default englishTranslations;
