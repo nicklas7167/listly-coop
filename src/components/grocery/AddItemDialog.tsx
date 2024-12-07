@@ -30,7 +30,7 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
     e.preventDefault();
     if (!newItem.trim()) return;
 
-    await onAddItem(newItem.trim(), store.trim(), quantity.trim());
+    await onAddItem(newItem.trim(), store.trim(), quantity);
     setNewItem("");
     setStore("");
     setQuantity("");

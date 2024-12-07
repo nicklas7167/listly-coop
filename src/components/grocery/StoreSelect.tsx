@@ -22,6 +22,7 @@ interface StoreSelectProps {
 export function StoreSelect({ listId, value, onChange }: StoreSelectProps) {
   const [newStore, setNewStore] = useState("");
   const [isAdding, setIsAdding] = useState(false);
+  const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const { translations } = useLanguage();
 
@@ -54,13 +55,19 @@ export function StoreSelect({ listId, value, onChange }: StoreSelectProps) {
       onChange(newStore.trim());
       setNewStore("");
       setIsAdding(false);
+      setOpen(false);
     } catch (error) {
       console.error('Error adding store:', error);
     }
   };
 
+  const handleStoreSelect = (store: string) => {
+    onChange(store);
+    setOpen(false);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button 
           variant="outline" 
@@ -81,9 +88,7 @@ export function StoreSelect({ listId, value, onChange }: StoreSelectProps) {
                   key={store}
                   variant={value === store ? "default" : "outline"}
                   className="w-full"
-                  onClick={() => {
-                    onChange(store);
-                  }}
+                  onClick={() => handleStoreSelect(store)}
                 >
                   {store}
                 </Button>
