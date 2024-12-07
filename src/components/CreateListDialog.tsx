@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 interface CreateListDialogProps {
   open: boolean;
@@ -19,13 +21,40 @@ interface CreateListDialogProps {
 
 export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) {
   const [listName, setListName] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement list creation logic
-    navigate(`/list/${Math.random().toString(36).substr(2, 9)}`);
-    onOpenChange(false);
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase
+        .from("lists")
+        .insert([{ name: listName }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Your list has been created.",
+      });
+
+      navigate(`/list/${data.id}`);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error creating list:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create list. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,12 +79,13 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
                 className="col-span-3"
                 placeholder="Weekly Groceries"
                 required
+                disabled={loading}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={!listName.trim()}>
-              Create List
+            <Button type="submit" disabled={!listName.trim() || loading}>
+              {loading ? "Creating..." : "Create List"}
             </Button>
           </DialogFooter>
         </form>

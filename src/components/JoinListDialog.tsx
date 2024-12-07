@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 interface JoinListDialogProps {
   open: boolean;
@@ -19,13 +21,61 @@ interface JoinListDialogProps {
 
 export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
   const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement join list logic
-    navigate(`/list/${code}`);
-    onOpenChange(false);
+    setLoading(true);
+
+    try {
+      // First check if the list exists
+      const { data: list, error: listError } = await supabase
+        .from("lists")
+        .select("*")
+        .eq("id", code)
+        .single();
+
+      if (listError) {
+        throw new Error("List not found");
+      }
+
+      // Join the list
+      const { error: joinError } = await supabase
+        .from("list_members")
+        .insert([{ list_id: code }]);
+
+      if (joinError) {
+        if (joinError.code === "23505") {
+          // Unique violation - already a member
+          toast({
+            description: "You're already a member of this list.",
+          });
+          navigate(`/list/${code}`);
+          onOpenChange(false);
+          return;
+        }
+        throw joinError;
+      }
+
+      toast({
+        title: "Success!",
+        description: "You've joined the list.",
+      });
+
+      navigate(`/list/${code}`);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error joining list:", error);
+      toast({
+        title: "Error",
+        description: "Failed to join list. Please check the code and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,12 +100,13 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
                 className="col-span-3"
                 placeholder="Enter share code"
                 required
+                disabled={loading}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={!code.trim()}>
-              Join List
+            <Button type="submit" disabled={!code.trim() || loading}>
+              {loading ? "Joining..." : "Join List"}
             </Button>
           </DialogFooter>
         </form>

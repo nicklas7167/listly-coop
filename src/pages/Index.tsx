@@ -1,12 +1,50 @@
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Share2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CreateListDialog } from "@/components/CreateListDialog";
 import { JoinListDialog } from "@/components/JoinListDialog";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showJoinDialog, setShowJoinDialog] = useState(false);
+  const [session, setSession] = useState(null);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) {
+        navigate("/dashboard");
+      }
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        navigate("/dashboard");
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully signed in.",
+        });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate, toast]);
+
+  if (session) {
+    return null; // Will redirect to dashboard
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30">
@@ -15,27 +53,26 @@ const Index = () => {
           Grocery List
         </h1>
         <p className="text-lg md:text-xl text-gray-600 text-center max-w-2xl mb-12">
-          Create and share grocery lists with your family and friends. Simple, fast, and collaborative.
+          Create and share grocery lists with your family and friends. Simple,
+          fast, and collaborative.
         </p>
-        
-        <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center">
-          <Button
-            size="lg"
-            className="flex items-center gap-2 w-full sm:w-auto"
-            onClick={() => setShowCreateDialog(true)}
-          >
-            <PlusCircle className="w-5 h-5" />
-            Create List
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="flex items-center gap-2 w-full sm:w-auto"
-            onClick={() => setShowJoinDialog(true)}
-          >
-            <Share2 className="w-5 h-5" />
-            Join List
-          </Button>
+
+        <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-8">
+          <Auth
+            supabaseClient={supabase}
+            appearance={{
+              theme: ThemeSupa,
+              variables: {
+                default: {
+                  colors: {
+                    brand: 'hsl(var(--primary))',
+                    brandAccent: 'hsl(var(--primary))',
+                  },
+                },
+              },
+            }}
+            providers={[]}
+          />
         </div>
 
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
