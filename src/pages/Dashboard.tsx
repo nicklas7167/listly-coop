@@ -8,12 +8,11 @@ import { JoinListDialog } from "@/components/JoinListDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/components/ui/use-toast";
 import { ListsTable } from "@/components/ListsTable";
+import { useQuery } from "@tanstack/react-query";
 
 const Dashboard = () => {
-  const [lists, setLists] = useState([]);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showJoinDialog, setShowJoinDialog] = useState(false);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
@@ -28,36 +27,30 @@ const Dashboard = () => {
     checkSession();
   }, [navigate]);
 
-  useEffect(() => {
-    fetchLists();
-  }, []);
-
-  const fetchLists = async () => {
-    try {
+  // Fetch lists using React Query
+  const { data: lists, isLoading } = useQuery({
+    queryKey: ['lists'],
+    queryFn: async () => {
       console.log("Fetching lists...");
-      const { data: lists, error } = await supabase
+      const { data, error } = await supabase
         .from("lists")
         .select("*")
         .order("created_at", { ascending: false });
 
       if (error) {
         console.error("Error fetching lists:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch your lists. Please try again.",
+          variant: "destructive",
+        });
         throw error;
       }
 
-      console.log("Fetched lists:", lists);
-      setLists(lists || []);
-    } catch (error) {
-      console.error("Error in fetchLists:", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch your lists. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+      console.log("Fetched lists:", data);
+      return data || [];
+    },
+  });
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -99,7 +92,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <ListsTable lists={lists} loading={loading} />
+        <ListsTable lists={lists || []} loading={isLoading} />
       </div>
 
       <CreateListDialog
