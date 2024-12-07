@@ -1,17 +1,16 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { DeleteConfirmationInput } from "./DeleteConfirmationInput";
+import { DeleteDialogActions } from "./DeleteDialogActions";
 
 interface DeleteListDialogProps {
   list: {
@@ -43,7 +42,6 @@ export function DeleteListDialog({ list, currentUserId, open, onOpenChange }: De
       if (error) throw error;
 
       if (data) {
-        // Invalidate both the lists and itemCounts queries
         queryClient.invalidateQueries({ queryKey: ['lists'] });
         queryClient.invalidateQueries({ queryKey: ['itemCounts'] });
         
@@ -71,6 +69,11 @@ export function DeleteListDialog({ list, currentUserId, open, onOpenChange }: De
     setConfirmationText("");
   };
 
+  const handleCancel = () => {
+    onOpenChange(false);
+    setConfirmationText("");
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent onClick={(e) => e.stopPropagation()}>
@@ -79,34 +82,18 @@ export function DeleteListDialog({ list, currentUserId, open, onOpenChange }: De
           <DialogDescription>
             This action cannot be undone. This will permanently delete the list
             "{list.name}" and all its items.
-            <div className="mt-4">
-              <p className="mb-2 text-sm text-muted-foreground">
-                Please type <span className="font-semibold">{list.name}</span> to confirm.
-              </p>
-              <Input
-                value={confirmationText}
-                onChange={(e) => setConfirmationText(e.target.value)}
-                placeholder="Type list name to confirm"
-                className="mt-1"
-              />
-            </div>
+            <DeleteConfirmationInput
+              listName={list.name}
+              value={confirmationText}
+              onChange={setConfirmationText}
+            />
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <Button variant="ghost" onClick={() => {
-            onOpenChange(false);
-            setConfirmationText("");
-          }}>
-            Cancel
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={handleDeleteConfirm}
-            disabled={confirmationText !== list.name}
-          >
-            Delete List
-          </Button>
-        </DialogFooter>
+        <DeleteDialogActions
+          onCancel={handleCancel}
+          onConfirm={handleDeleteConfirm}
+          isConfirmDisabled={confirmationText !== list.name}
+        />
       </DialogContent>
     </Dialog>
   );
