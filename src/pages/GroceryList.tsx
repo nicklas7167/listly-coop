@@ -6,7 +6,6 @@ import { GroceryHeader } from "@/components/grocery/GroceryHeader";
 import { AddItemDialog } from "@/components/grocery/AddItemDialog";
 import { GroceryItem } from "@/components/grocery/GroceryItem";
 import { AnimatePresence } from "framer-motion";
-import { useGroceryMutations } from "@/hooks/useGroceryMutations";
 
 interface GroceryItem {
   id: string;
@@ -18,7 +17,6 @@ interface GroceryItem {
 const GroceryList = () => {
   const { id } = useParams();
   const [shareCode, setShareCode] = useState<string>("");
-  const { addItemMutation, toggleItemMutation, deleteItemMutation } = useGroceryMutations(id);
 
   // Fetch share code
   useEffect(() => {
@@ -64,19 +62,30 @@ const GroceryList = () => {
   });
 
   const handleAddItem = async (name: string) => {
-    await addItemMutation.mutateAsync(name);
+    if (!id) return;
+    
+    const { error } = await supabase
+      .from('grocery_items')
+      .insert([
+        { name, list_id: id }
+      ]);
+
+    if (error) {
+      console.error('Error adding item:', error);
+      throw error;
+    }
   };
 
   const toggleItem = async (itemId: string, currentStatus: boolean) => {
-    await toggleItemMutation.mutateAsync({
-      itemId,
-      completed: !currentStatus,
-    });
-  };
+    const { error } = await supabase
+      .from('grocery_items')
+      .update({ completed: !currentStatus })
+      .eq('id', itemId);
 
-  const handleDeleteItem = async (itemId: string) => {
-    console.log('Handling delete for item:', itemId);
-    return deleteItemMutation.mutateAsync(itemId);
+    if (error) {
+      console.error('Error toggling item:', error);
+      throw error;
+    }
   };
 
   return (
@@ -89,7 +98,7 @@ const GroceryList = () => {
             <h1 className="text-2xl font-bold">Grocery List</h1>
             <AddItemDialog 
               onAddItem={handleAddItem}
-              isAdding={addItemMutation.isPending}
+              isAdding={false}
             />
           </div>
 
@@ -105,7 +114,6 @@ const GroceryList = () => {
                     name={item.name}
                     completed={item.completed}
                     onToggle={toggleItem}
-                    onDelete={handleDeleteItem}
                   />
                 ))}
               </AnimatePresence>
