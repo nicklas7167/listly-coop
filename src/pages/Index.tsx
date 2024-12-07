@@ -47,9 +47,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-secondary/20 to-primary/10">
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 md:py-20">
-        {/* Hero Section */}
-        <div className="w-full max-w-4xl mx-auto text-center space-y-6 md:space-y-8 animate-fade-in">
+      <div className="min-h-screen flex flex-col items-center justify-start px-4 py-8 md:py-20">
+        {/* Hero Section - Reduced vertical spacing */}
+        <div className="w-full max-w-4xl mx-auto text-center space-y-4 md:space-y-8 animate-fade-in">
           <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary bg-300% animate-gradient">
             Listify
           </h1>
@@ -58,10 +58,10 @@ const Index = () => {
             Never forget items or buy duplicates again!
           </p>
 
-          {/* Language Support Banner */}
-          <div className="inline-flex items-center gap-3 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-gray-100">
-            <Globe2 className="w-4 h-4 text-primary" />
-            <div className="flex items-center gap-2 text-sm overflow-x-auto no-scrollbar">
+          {/* Language Support Banner - More compact on mobile */}
+          <div className="inline-flex items-center gap-2 md:gap-3 bg-white/80 backdrop-blur-sm px-3 md:px-4 py-1.5 md:py-2 rounded-full shadow-sm border border-gray-100">
+            <Globe2 className="w-3 h-3 md:w-4 md:h-4 text-primary" />
+            <div className="flex items-center gap-1 md:gap-2 text-xs md:text-sm overflow-x-auto no-scrollbar">
               <span className="whitespace-nowrap">🇬🇧 English</span>
               <span className="text-gray-300">•</span>
               <span className="whitespace-nowrap">🇪🇸 Español</span>
@@ -70,31 +70,31 @@ const Index = () => {
             </div>
           </div>
 
-          {/* CTA Button */}
+          {/* CTA Button - Reduced vertical margin */}
           <Button 
             onClick={scrollToAuth}
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-white px-8 py-7 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group mt-8"
+            className="bg-primary hover:bg-primary/90 text-white px-6 md:px-8 py-5 md:py-7 text-base md:text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group mt-4 md:mt-8"
           >
             Get Started
-            <ArrowDown className="ml-2 w-5 h-5 group-hover:translate-y-1 transition-transform duration-300" />
+            <ArrowDown className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-y-1 transition-transform duration-300" />
           </Button>
         </div>
 
-        {/* Features Grid */}
-        <div className="w-full max-w-6xl mt-20 md:mt-32 px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        {/* Features Grid - Optimized for mobile */}
+        <div className="w-full max-w-6xl mt-8 md:mt-32 px-2 md:px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-8">
             {features.map((feature, index) => (
               <div
                 key={feature.title}
-                className="group p-6 md:p-8 rounded-2xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 animate-scale-in"
+                className="group p-4 md:p-8 rounded-xl md:rounded-2xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 animate-scale-in"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="bg-primary/10 rounded-xl p-3 w-fit group-hover:scale-110 transition-transform duration-300">
-                  <feature.icon className="w-6 h-6 md:w-7 md:h-7 text-primary" />
+                <div className="bg-primary/10 rounded-lg p-2 md:p-3 w-fit group-hover:scale-110 transition-transform duration-300">
+                  <feature.icon className="w-5 h-5 md:w-7 md:h-7 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mt-4 mb-2 text-gray-800">{feature.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                <h3 className="text-lg md:text-xl font-semibold mt-3 mb-1 md:mt-4 md:mb-2 text-gray-800">{feature.title}</h3>
+                <p className="text-sm md:text-base text-gray-600 leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
