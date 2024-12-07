@@ -71,12 +71,18 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  const copyShareCode = (shareCode: string) => {
+  const copyShareCode = (shareCode: string, event: React.MouseEvent) => {
+    // Prevent row click when copying share code
+    event.stopPropagation();
     navigator.clipboard.writeText(shareCode);
     toast({
       title: "Share code copied!",
       description: "Share this code with others to collaborate on this list.",
     });
+  };
+
+  const handleRowClick = (listId: string) => {
+    navigate(`/list/${listId}`);
   };
 
   return (
@@ -150,14 +156,18 @@ const Dashboard = () => {
               </TableHeader>
               <TableBody>
                 {lists.map((list) => (
-                  <TableRow key={list.id}>
+                  <TableRow 
+                    key={list.id} 
+                    onClick={() => handleRowClick(list.id)}
+                    className="cursor-pointer hover:bg-secondary/10 transition-colors"
+                  >
                     <TableCell className="font-medium">{list.name}</TableCell>
                     <TableCell>
                       <Button
                         variant="ghost"
                         size="sm"
                         className="flex items-center gap-2 text-xs sm:text-sm"
-                        onClick={() => copyShareCode(list.share_code)}
+                        onClick={(e) => copyShareCode(list.share_code, e)}
                       >
                         <span className="font-mono">{list.share_code}</span>
                         <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -167,7 +177,10 @@ const Dashboard = () => {
                       <Button
                         variant="ghost"
                         size={isMobile ? "sm" : "default"}
-                        onClick={() => navigate(`/list/${list.id}`)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/list/${list.id}`);
+                        }}
                       >
                         View
                       </Button>
