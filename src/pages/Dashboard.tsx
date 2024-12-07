@@ -39,32 +39,47 @@ const Dashboard = () => {
 
   const fetchLists = async () => {
     try {
+      // First, get lists where user is owner
       const { data: ownedLists, error: ownedError } = await supabase
         .from("lists")
         .select("*")
         .order("created_at", { ascending: false });
 
-      const { data: memberLists, error: memberError } = await supabase
-        .from("lists")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .in(
-          "id",
-          (
-            await supabase
-              .from("list_members")
-              .select("list_id")
-          ).data?.map((m) => m.list_id) || []
-        );
+      if (ownedError) throw ownedError;
 
-      if (ownedError || memberError) throw ownedError || memberError;
+      // Then, get list IDs where user is a member
+      const { data: memberships, error: membershipError } = await supabase
+        .from("list_members")
+        .select("list_id");
 
+      if (membershipError) throw membershipError;
+
+      // If user is a member of any lists, fetch those lists
+      let memberLists = [];
+      if (memberships && memberships.length > 0) {
+        const listIds = memberships.map(m => m.list_id);
+        const { data: sharedLists, error: sharedError } = await supabase
+          .from("lists")
+          .select("*")
+          .in("id", listIds)
+          .order("created_at", { ascending: false });
+
+        if (sharedError) throw sharedError;
+        memberLists = sharedLists || [];
+      }
+
+      // Combine and deduplicate lists
       const allLists = [
-        ...(ownedLists || []).map((list) => ({ ...list, type: "owned" })),
-        ...(memberLists || []).map((list) => ({ ...list, type: "shared" })),
+        ...(ownedLists || []).map(list => ({ ...list, type: "owned" })),
+        ...memberLists.map(list => ({ ...list, type: "shared" }))
       ];
 
-      setLists(allLists);
+      // Remove duplicates based on list ID
+      const uniqueLists = Array.from(
+        new Map(allLists.map(list => [list.id, list])).values()
+      );
+
+      setLists(uniqueLists);
     } catch (error) {
       console.error("Error fetching lists:", error);
       toast({
