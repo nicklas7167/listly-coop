@@ -37,6 +37,12 @@ export function DeleteListDialog({
   const handleDeleteConfirm = async () => {
     if (confirmationText !== list.name) return;
 
+    // Optimistically update the UI immediately
+    const previousLists = queryClient.getQueryData(['lists']);
+    queryClient.setQueryData(['lists'], (oldData: any) => {
+      return oldData?.filter((item: any) => item.id !== list.id) || [];
+    });
+
     try {
       const { data, error } = await supabase.rpc(
         'delete_list_if_owner',
@@ -49,11 +55,6 @@ export function DeleteListDialog({
       if (error) throw error;
 
       if (data) {
-        // Update the cache immediately to remove the deleted list
-        queryClient.setQueryData(['lists'], (oldData: any) => {
-          return oldData?.filter((item: any) => item.id !== list.id) || [];
-        });
-
         // Close both dialogs
         onDeleteComplete?.();
         
@@ -68,6 +69,9 @@ export function DeleteListDialog({
           description: "The list has been successfully deleted.",
         });
       } else {
+        // Revert the optimistic update if deletion fails
+        queryClient.setQueryData(['lists'], previousLists);
+        
         toast({
           title: "Error",
           description: "You don't have permission to delete this list.",
@@ -75,6 +79,9 @@ export function DeleteListDialog({
         });
       }
     } catch (error) {
+      // Revert the optimistic update if there's an error
+      queryClient.setQueryData(['lists'], previousLists);
+      
       console.error('Error deleting list:', error);
       toast({
         title: "Error",
