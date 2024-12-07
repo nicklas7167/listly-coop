@@ -44,7 +44,7 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
           <Plus className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>{translations.add_new_item}</DialogTitle>
         </DialogHeader>

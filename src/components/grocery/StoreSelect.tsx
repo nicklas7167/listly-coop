@@ -52,10 +52,9 @@ export function StoreSelect({ listId, value, onChange }: StoreSelectProps) {
 
       // Update the stores list
       queryClient.invalidateQueries({ queryKey: ['stores', listId] });
-      onChange(newStore.trim());
       setNewStore("");
       setIsAdding(false);
-      setOpen(false);
+      // Don't close the dialog after adding a store
     } catch (error) {
       console.error('Error adding store:', error);
     }
@@ -63,7 +62,7 @@ export function StoreSelect({ listId, value, onChange }: StoreSelectProps) {
 
   const handleStoreSelect = (store: string) => {
     onChange(store);
-    setOpen(false);
+    setOpen(false); // Only close when selecting an existing store
   };
 
   return (
@@ -76,7 +75,7 @@ export function StoreSelect({ listId, value, onChange }: StoreSelectProps) {
           {value || "Select a store where to buy this item"}
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>{translations.stores}</DialogTitle>
         </DialogHeader>
