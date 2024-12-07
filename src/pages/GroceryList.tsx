@@ -4,6 +4,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { ArrowLeft, Copy, Plus } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface GroceryItem {
   id: string;
@@ -16,6 +23,7 @@ const GroceryList = () => {
   const { toast } = useToast();
   const [newItem, setNewItem] = useState("");
   const [items, setItems] = useState<GroceryItem[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +37,7 @@ const GroceryList = () => {
 
     setItems([...items, item]);
     setNewItem("");
+    setDialogOpen(false);
   };
 
   const toggleItem = (id: string) => {
@@ -68,19 +77,32 @@ const GroceryList = () => {
         </div>
 
         <div className="bg-white rounded-xl shadow-lg p-6 animate-scale-in">
-          <h1 className="text-2xl font-bold mb-6">Grocery List</h1>
-
-          <form onSubmit={handleAddItem} className="flex gap-2 mb-6">
-            <Input
-              value={newItem}
-              onChange={(e) => setNewItem(e.target.value)}
-              placeholder="Add new item..."
-              className="flex-1"
-            />
-            <Button type="submit" disabled={!newItem.trim()}>
-              <Plus className="w-4 h-4" />
-            </Button>
-          </form>
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-bold">Grocery List</h1>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" className="rounded-full w-8 h-8 p-0">
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add New Item</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleAddItem} className="space-y-4 mt-2">
+                  <Input
+                    value={newItem}
+                    onChange={(e) => setNewItem(e.target.value)}
+                    placeholder="Enter item name..."
+                    autoFocus
+                  />
+                  <Button type="submit" className="w-full" disabled={!newItem.trim()}>
+                    Add Item
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
 
           <div className="space-y-2">
             {items.map((item) => (
