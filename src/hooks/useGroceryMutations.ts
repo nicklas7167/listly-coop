@@ -27,7 +27,7 @@ export function useGroceryMutations(listId: string | undefined) {
     },
     onError: () => {
       toast({
-        description: "Failed to add item. Please try again.",
+        description: "Failed to add item",
         variant: "destructive",
       });
     },
@@ -35,22 +35,19 @@ export function useGroceryMutations(listId: string | undefined) {
 
   const toggleItemMutation = useMutation({
     mutationFn: async ({ itemId, completed }: { itemId: string; completed: boolean }) => {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('grocery_items')
         .update({ completed })
-        .eq('id', itemId)
-        .select()
-        .single();
+        .eq('id', itemId);
 
       if (error) throw error;
-      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groceryItems', listId] });
     },
     onError: () => {
       toast({
-        description: "Failed to update item. Please try again.",
+        description: "Failed to update item",
         variant: "destructive",
       });
     },
@@ -68,14 +65,13 @@ export function useGroceryMutations(listId: string | undefined) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groceryItems', listId] });
       toast({
-        description: "Item removed",
+        description: "Item deleted",
         duration: 2000,
       });
     },
-    onError: (error) => {
-      console.error('Delete mutation error:', error);
+    onError: () => {
       toast({
-        description: "Failed to delete item. Please try again.",
+        description: "Failed to delete item",
         variant: "destructive",
       });
     },
