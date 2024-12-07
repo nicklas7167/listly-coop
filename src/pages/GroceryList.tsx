@@ -19,29 +19,29 @@ const GroceryList = () => {
   const [shareCode, setShareCode] = useState<string>("");
   const queryClient = useQueryClient();
 
-  // Fetch share code
-  useEffect(() => {
-    const fetchList = async () => {
-      if (!id) return;
+  // Fetch list details
+  const { data: listDetails } = useQuery({
+    queryKey: ['list', id],
+    queryFn: async () => {
+      if (!id) return null;
       
       const { data, error } = await supabase
         .from("lists")
-        .select("share_code")
+        .select("name, share_code")
         .eq("id", id)
         .single();
 
       if (error) {
         console.error("Error fetching list:", error);
-        return;
+        return null;
       }
 
       if (data) {
         setShareCode(data.share_code);
       }
-    };
-
-    fetchList();
-  }, [id]);
+      return data;
+    },
+  });
 
   // Fetch items query
   const { data: items = [], isLoading } = useQuery({
@@ -131,7 +131,7 @@ const GroceryList = () => {
 
         <div className="bg-white rounded-xl shadow-lg p-6 animate-scale-in">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold">Grocery List</h1>
+            <h1 className="text-2xl font-bold">{listDetails?.name || "Loading..."}</h1>
             <AddItemDialog 
               onAddItem={handleAddItem}
               isAdding={false}
