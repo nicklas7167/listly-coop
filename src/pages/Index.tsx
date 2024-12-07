@@ -92,6 +92,11 @@ const Index = () => {
                 },
               },
             }}
+            onError={(error) => {
+              console.error('Auth error:', error);
+              // Display user-friendly error message
+              toast.error("Invalid email or password. Please try again.");
+            }}
           />
         </div>
 
