@@ -30,9 +30,12 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
     setLoading(true);
 
     try {
-      console.log("Attempting to join list with share code:", shareCode);
+      console.log("Starting join process with share code:", shareCode);
       const list = await checkListExists(shareCode);
+      console.log("Found list:", list);
+      
       const { alreadyMember } = await joinList(shareCode);
+      console.log("Join result - already member:", alreadyMember);
 
       if (alreadyMember) {
         toast({
