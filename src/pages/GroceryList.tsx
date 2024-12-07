@@ -17,6 +17,8 @@ interface GroceryItem {
   completed: boolean;
   list_id: string;
   creator_id: string;
+  store?: string;
+  quantity?: string;
 }
 
 const GroceryList = () => {
@@ -26,7 +28,6 @@ const GroceryList = () => {
   const { translations } = useLanguage();
   const [showMembers, setShowMembers] = useState(false);
 
-  // Fetch list details
   const { data: listDetails } = useQuery({
     queryKey: ['list', id],
     queryFn: async () => {
@@ -109,13 +110,18 @@ const GroceryList = () => {
     },
   });
 
-  const handleAddItem = async (name: string) => {
+  const handleAddItem = async (name: string, store?: string, quantity?: string) => {
     if (!id) return;
     
     const { error } = await supabase
       .from('grocery_items')
       .insert([
-        { name, list_id: id }
+        { 
+          name, 
+          list_id: id,
+          store: store || null,
+          quantity: quantity || null
+        }
       ]);
 
     if (error) {
@@ -166,6 +172,8 @@ const GroceryList = () => {
                     name={item.name}
                     completed={item.completed}
                     creatorId={item.creator_id}
+                    store={item.store}
+                    quantity={item.quantity}
                     onToggle={toggleItem}
                   />
                 ))}

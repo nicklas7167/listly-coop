@@ -12,12 +12,14 @@ import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AddItemDialogProps {
-  onAddItem: (name: string) => Promise<void>;
+  onAddItem: (name: string, store?: string, quantity?: string) => Promise<void>;
   isAdding: boolean;
 }
 
 export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
   const [newItem, setNewItem] = useState("");
+  const [store, setStore] = useState("");
+  const [quantity, setQuantity] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const { translations } = useLanguage();
 
@@ -25,8 +27,10 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
     e.preventDefault();
     if (!newItem.trim()) return;
 
-    await onAddItem(newItem.trim());
+    await onAddItem(newItem.trim(), store.trim(), quantity.trim());
     setNewItem("");
+    setStore("");
+    setQuantity("");
     setDialogOpen(false);
   };
 
@@ -47,6 +51,16 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
             onChange={(e) => setNewItem(e.target.value)}
             placeholder={translations.enter_item_name}
             autoFocus
+          />
+          <Input
+            value={store}
+            onChange={(e) => setStore(e.target.value)}
+            placeholder="Store (optional)"
+          />
+          <Input
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            placeholder="Quantity (optional)"
           />
           <Button 
             type="submit" 

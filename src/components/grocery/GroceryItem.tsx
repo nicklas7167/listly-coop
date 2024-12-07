@@ -20,10 +20,20 @@ interface GroceryItemProps {
   name: string;
   completed: boolean;
   creatorId: string;
+  store?: string;
+  quantity?: string;
   onToggle: (id: string, completed: boolean) => Promise<void>;
 }
 
-export function GroceryItem({ id, name, completed, creatorId, onToggle }: GroceryItemProps) {
+export function GroceryItem({ 
+  id, 
+  name, 
+  completed, 
+  creatorId, 
+  store, 
+  quantity, 
+  onToggle 
+}: GroceryItemProps) {
   const { translations } = useLanguage();
 
   const { data: creatorProfile } = useQuery({
@@ -84,6 +94,16 @@ export function GroceryItem({ id, name, completed, creatorId, onToggle }: Grocer
           <span className={completed ? "line-through text-gray-400" : ""}>
             {name}
           </span>
+          {quantity && (
+            <span className="text-sm text-gray-500">
+              · {quantity}
+            </span>
+          )}
+          {store && (
+            <span className="text-sm text-gray-500">
+              · {store}
+            </span>
+          )}
           <span className="text-xs text-gray-400 font-medium">
             · {creatorProfile?.first_name || translations.anonymous_user}
           </span>

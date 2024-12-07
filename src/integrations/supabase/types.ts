@@ -17,6 +17,8 @@ export type Database = {
           id: string
           list_id: string
           name: string
+          quantity: string | null
+          store: string | null
         }
         Insert: {
           completed?: boolean
@@ -25,6 +27,8 @@ export type Database = {
           id?: string
           list_id: string
           name: string
+          quantity?: string | null
+          store?: string | null
         }
         Update: {
           completed?: boolean
@@ -33,6 +37,8 @@ export type Database = {
           id?: string
           list_id?: string
           name?: string
+          quantity?: string | null
+          store?: string | null
         }
         Relationships: [
           {
