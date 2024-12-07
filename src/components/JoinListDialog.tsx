@@ -20,7 +20,7 @@ interface JoinListDialogProps {
 }
 
 export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
-  const [code, setCode] = useState("");
+  const [shareCode, setShareCode] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -30,8 +30,9 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
     setLoading(true);
 
     try {
-      await checkListExists(code);
-      const { alreadyMember } = await joinList(code);
+      console.log("Attempting to join list with share code:", shareCode);
+      const list = await checkListExists(shareCode);
+      const { alreadyMember } = await joinList(shareCode);
 
       if (alreadyMember) {
         toast({
@@ -44,13 +45,13 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
         });
       }
 
-      navigate(`/list/${code}`);
+      navigate(`/list/${list.id}`);
       onOpenChange(false);
     } catch (error) {
       console.error("Error joining list:", error);
       toast({
         title: "Error",
-        description: "Failed to join list. Please check the code and try again.",
+        description: "Failed to join list. Please check the share code and try again.",
         variant: "destructive",
       });
     } finally {
@@ -70,13 +71,13 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="code" className="text-right">
-                Code
+              <Label htmlFor="shareCode" className="text-right">
+                Share Code
               </Label>
               <Input
-                id="code"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
+                id="shareCode"
+                value={shareCode}
+                onChange={(e) => setShareCode(e.target.value)}
                 className="col-span-3"
                 placeholder="Enter share code"
                 required
@@ -85,7 +86,7 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={!code.trim() || loading}>
+            <Button type="submit" disabled={!shareCode.trim() || loading}>
               {loading ? "Joining..." : "Join List"}
             </Button>
           </DialogFooter>
