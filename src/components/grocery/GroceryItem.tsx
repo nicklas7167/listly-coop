@@ -46,7 +46,7 @@ export function GroceryItem({ id, name, completed, onToggle }: GroceryItemProps)
     }
   };
 
-  const handleToggle = async (e: React.MouseEvent) => {
+  const handleToggle = async (e: React.MouseEvent | React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation(); // Prevent event bubbling
     await onToggle(id, completed);
   };
@@ -68,11 +68,11 @@ export function GroceryItem({ id, name, completed, onToggle }: GroceryItemProps)
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <button
-            className="text-gray-400 hover:text-red-500 transition-colors ml-auto"
+            className="p-2 text-gray-400 hover:text-red-500 transition-colors ml-auto touch-manipulation"
             aria-label="Delete item"
             onClick={(e) => e.stopPropagation()} // Prevent row click when clicking delete
           >
-            <Trash className="h-4 w-4" />
+            <Trash className="h-5 w-5 md:h-4 md:w-4" />
           </button>
         </AlertDialogTrigger>
         <AlertDialogContent onClick={(e) => e.stopPropagation()}> {/* Prevent row click when dialog is open */}
