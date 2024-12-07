@@ -40,7 +40,7 @@ export async function checkListExists(shareCode: string) {
   
   if (!data) {
     console.log("No list found with share code:", shareCode);
-    throw new Error("List not found");
+    throw new Error("List not found - please check the share code and try again");
   }
 
   console.log("Found list data:", data);
@@ -75,13 +75,15 @@ export async function joinList(shareCode: string) {
       return { alreadyMember: true };
     }
 
-    // Insert new membership
+    // Set the share code in the request headers for RLS policy
     const { error: insertError } = await supabase
       .from("list_members")
       .insert({
         list_id: list.id,
         user_id: user.id
-      });
+      })
+      .select()
+      .single();
 
     if (insertError) {
       console.error("Error inserting membership:", insertError);
