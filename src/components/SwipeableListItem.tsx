@@ -27,9 +27,14 @@ export function SwipeableListItem({ children, onDelete }: SwipeableListItemProps
 
   return (
     <div ref={constraintsRef} className="relative overflow-hidden">
-      <div className="absolute right-0 top-0 bottom-0 w-20 bg-red-500 flex items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isDragging ? 1 : 0 }}
+        transition={{ duration: 0.2 }}
+        className="absolute right-0 top-0 bottom-0 w-20 bg-red-500 flex items-center justify-center"
+      >
         <Trash2 className="text-white w-6 h-6" />
-      </div>
+      </motion.div>
       <motion.div
         drag="x"
         dragConstraints={{ right: 0, left: -200 }}
