@@ -90,12 +90,10 @@ const Index = () => {
                   social_provider_text: "Sign up with {{provider}}",
                   link_text: "Don't have an account? Sign up",
                 },
+                errors: {
+                  invalid_credentials: "Invalid email or password. Please try again.",
+                }
               },
-            }}
-            onError={(error) => {
-              console.error('Auth error:', error);
-              // Display user-friendly error message
-              toast.error("Invalid email or password. Please try again.");
             }}
           />
         </div>
