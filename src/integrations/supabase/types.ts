@@ -41,18 +41,21 @@ export type Database = {
           id: string
           name: string
           owner_id: string
+          share_code: string
         }
         Insert: {
           created_at?: string
           id?: string
           name: string
           owner_id: string
+          share_code?: string
         }
         Update: {
           created_at?: string
           id?: string
           name?: string
           owner_id?: string
+          share_code?: string
         }
         Relationships: []
       }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Share2, LogOut } from "lucide-react";
+import { PlusCircle, Share2, LogOut, Copy } from "lucide-react";
 import { CreateListDialog } from "@/components/CreateListDialog";
 import { JoinListDialog } from "@/components/JoinListDialog";
 import {
@@ -69,6 +69,14 @@ const Dashboard = () => {
     navigate("/");
   };
 
+  const copyShareCode = (shareCode: string) => {
+    navigator.clipboard.writeText(shareCode);
+    toast({
+      title: "Share code copied!",
+      description: "Share this code with others to collaborate on this list.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30 p-6">
       <div className="max-w-6xl mx-auto">
@@ -124,7 +132,7 @@ const Dashboard = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
-                  <TableHead>Type</TableHead>
+                  <TableHead>Share Code</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -134,9 +142,15 @@ const Dashboard = () => {
                   <TableRow key={list.id}>
                     <TableCell className="font-medium">{list.name}</TableCell>
                     <TableCell>
-                      {list.owner_id === supabase.auth.getUser()?.data?.user?.id
-                        ? "Owner"
-                        : "Shared with me"}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2"
+                        onClick={() => copyShareCode(list.share_code)}
+                      >
+                        <span className="font-mono">{list.share_code}</span>
+                        <Copy className="w-4 h-4" />
+                      </Button>
                     </TableCell>
                     <TableCell>
                       {new Date(list.created_at).toLocaleDateString()}
