@@ -46,18 +46,20 @@ export function GroceryItem({ id, name, completed, onToggle }: GroceryItemProps)
     }
   };
 
+  const handleToggle = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event bubbling
+    await onToggle(id, completed);
+  };
+
   return (
     <div 
-      onClick={() => onToggle(id, completed)}
+      onClick={handleToggle}
       className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors group cursor-pointer"
     >
       <input
         type="checkbox"
         checked={completed}
-        onChange={(e) => {
-          e.stopPropagation(); // Prevent double triggering when clicking checkbox directly
-          onToggle(id, completed);
-        }}
+        onChange={handleToggle}
         className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
       />
       <span className={`flex-1 ${completed ? "line-through text-gray-400" : ""}`}>
