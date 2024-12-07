@@ -17,8 +17,16 @@ export function SwipeableListItem({ children, onDelete }: SwipeableListItemProps
     const velocity = info.velocity.x;
 
     if (offset < -100 || velocity < -500) {
-      await controls.start({ x: -200, height: 0, opacity: 0 });
-      await onDelete();
+      try {
+        // First delete from database
+        await onDelete();
+        // Then animate out
+        await controls.start({ x: -200, height: 0, opacity: 0 });
+      } catch (error) {
+        // If deletion fails, animate back to original position
+        controls.start({ x: 0 });
+        console.error('Failed to delete item:', error);
+      }
     } else {
       controls.start({ x: 0 });
     }
