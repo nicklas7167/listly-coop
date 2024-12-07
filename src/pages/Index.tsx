@@ -154,16 +154,13 @@ const Index = () => {
                   sign_up: {
                     email_input_placeholder: "Your email address",
                     password_input_placeholder: "Choose a password",
-                    password_label: "Password",
                     email_label: "Email",
+                    password_label: "Password",
                     button_label: "Sign up",
                     loading_button_label: "Signing up ...",
                     social_provider_text: "Sign up with {{provider}}",
                     link_text: "Don't have an account? Sign up",
                     confirmation_text: "Check your email for the confirmation link",
-                    password_mismatch: "Passwords don't match",
-                    confirmation_password_label: "Confirm password",
-                    confirmation_password_input_placeholder: "Type your password again",
                   },
                 },
               }}
