@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface GroceryItemProps {
   id: string;
@@ -30,19 +30,13 @@ export function GroceryItem({ id, name, completed, onToggle }: GroceryItemProps)
 
       if (error) throw error;
 
-      toast({
-        description: "Item deleted",
-        duration: 2000,
-      });
+      toast.success("Item deleted");
 
       // Force reload the page to refresh the list
       window.location.reload();
     } catch (error) {
       console.error('Error deleting item:', error);
-      toast({
-        description: "Failed to delete item",
-        variant: "destructive",
-      });
+      toast.error("Failed to delete item");
     }
   };
 
