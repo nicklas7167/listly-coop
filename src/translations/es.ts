@@ -68,5 +68,11 @@ export const spanishTranslations: Translations = {
   delete_list_warning: "Esta acción no se puede deshacer. Esto eliminará permanentemente la lista y todos sus elementos.",
   type_list_name: "Por favor escribe {listName} para confirmar.",
   delete_list_success: "La lista ha sido eliminada exitosamente.",
-  delete_list_error: "Error al eliminar la lista. Por favor, intenta de nuevo."
+  delete_list_error: "Error al eliminar la lista. Por favor, intenta de nuevo.",
+
+  // List Members Dialog
+  list_members: "Miembros de la Lista",
+  loading: "Cargando...",
+  no_members: "No se encontraron miembros",
+  anonymous_user: "Usuario Anónimo",
 };

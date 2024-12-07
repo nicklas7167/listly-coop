@@ -1,5 +1,3 @@
-export type Language = "en" | "es" | "da";
-
 export interface Translations {
   // Dashboard translations
   my_lists: string;
@@ -62,11 +60,17 @@ export interface Translations {
   copy_share_code: string;
   delete_list: string;
   share_code_success: string;
-  
+
   // Delete List Dialog
   delete_list_confirm: string;
   delete_list_warning: string;
   type_list_name: string;
   delete_list_success: string;
   delete_list_error: string;
+
+  // List Members Dialog
+  list_members: string;
+  loading: string;
+  no_members: string;
+  anonymous_user: string;
 }

@@ -68,5 +68,11 @@ export const danishTranslations: Translations = {
   delete_list_warning: "Denne handling kan ikke fortrydes. Dette vil permanent slette listen og alle dens varer.",
   type_list_name: "Skriv venligst {listName} for at bekræfte.",
   delete_list_success: "Listen er blevet slettet.",
-  delete_list_error: "Kunne ikke slette listen. Prøv venligst igen."
+  delete_list_error: "Kunne ikke slette listen. Prøv venligst igen.",
+
+  // List Members Dialog
+  list_members: "Listemedlemmer",
+  loading: "Indlæser...",
+  no_members: "Ingen medlemmer fundet",
+  anonymous_user: "Anonym Bruger",
 };

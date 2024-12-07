@@ -68,5 +68,11 @@ export const englishTranslations: Translations = {
   delete_list_warning: "This action cannot be undone. This will permanently delete the list and all its items.",
   type_list_name: "Please type {listName} to confirm.",
   delete_list_success: "The list has been successfully deleted.",
-  delete_list_error: "Failed to delete the list. Please try again."
+  delete_list_error: "Failed to delete the list. Please try again.",
+
+  // List Members Dialog
+  list_members: "List Members",
+  loading: "Loading...",
+  no_members: "No members found",
+  anonymous_user: "Anonymous User",
 };

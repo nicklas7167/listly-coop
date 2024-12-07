@@ -7,6 +7,9 @@ import { AddItemDialog } from "@/components/grocery/AddItemDialog";
 import { GroceryItem } from "@/components/grocery/GroceryItem";
 import { AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Users } from "lucide-react";
+import { ListMembersDialog } from "@/components/grocery/ListMembersDialog";
+import { Button } from "@/components/ui/button";
 
 interface GroceryItem {
   id: string;
@@ -20,6 +23,7 @@ const GroceryList = () => {
   const [shareCode, setShareCode] = useState<string>("");
   const queryClient = useQueryClient();
   const { translations } = useLanguage();
+  const [showMembers, setShowMembers] = useState(false);
 
   // Fetch list details
   const { data: listDetails } = useQuery({
@@ -133,11 +137,20 @@ const GroceryList = () => {
 
         <div className="bg-white rounded-xl shadow-lg p-6 animate-scale-in">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold">{listDetails?.name || translations.loading_lists}</h1>
-            <AddItemDialog 
-              onAddItem={handleAddItem}
-              isAdding={false}
-            />
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold">
+                {listDetails?.name || translations.loading_lists}
+              </h1>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowMembers(true)}
+                className="h-8 w-8"
+              >
+                <Users className="h-4 w-4" />
+              </Button>
+            </div>
+            <AddItemDialog onAddItem={handleAddItem} isAdding={false} />
           </div>
 
           {isLoading ? (
@@ -164,8 +177,14 @@ const GroceryList = () => {
           )}
         </div>
       </div>
+
+      <ListMembersDialog
+        listId={id || ""}
+        open={showMembers}
+        onOpenChange={setShowMembers}
+      />
     </div>
   );
-}
+};
 
 export default GroceryList;
