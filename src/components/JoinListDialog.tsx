@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { checkListExists, joinList } from "@/utils/listOperations";
+import { supabase } from "@/integrations/supabase/client";
 
 interface JoinListDialogProps {
   open: boolean;
@@ -21,6 +22,7 @@ interface JoinListDialogProps {
 
 export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
   const [shareCode, setShareCode] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -30,6 +32,16 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
     setLoading(true);
 
     try {
+      // Update user's profile with first name
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ first_name: firstName.trim() })
+        .eq('id', (await supabase.auth.getUser()).data.user?.id);
+
+      if (profileError) {
+        throw new Error("Failed to update profile");
+      }
+
       console.log("Starting join process with share code:", shareCode);
       const list = await checkListExists(shareCode.trim());
       console.log("Found list:", list);
@@ -69,10 +81,24 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
           <DialogHeader>
             <DialogTitle>Join Existing List</DialogTitle>
             <DialogDescription>
-              Enter the share code to join an existing grocery list.
+              Enter your name and the share code to join an existing grocery list.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="firstName" className="text-right">
+                First Name
+              </Label>
+              <Input
+                id="firstName"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="col-span-3"
+                placeholder="Enter your first name"
+                required
+                disabled={loading}
+              />
+            </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="shareCode" className="text-right">
                 Share Code
@@ -89,7 +115,10 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={!shareCode.trim() || loading}>
+            <Button 
+              type="submit" 
+              disabled={!shareCode.trim() || !firstName.trim() || loading}
+            >
               {loading ? "Joining..." : "Join List"}
             </Button>
           </DialogFooter>
