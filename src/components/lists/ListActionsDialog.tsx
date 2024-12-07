@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DeleteListDialog } from "./DeleteListDialog";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ListActionsDialogProps {
   list: {
@@ -26,10 +27,11 @@ interface ListActionsDialogProps {
 export function ListActionsDialog({ list, currentUserId, children }: ListActionsDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const { translations } = useLanguage();
 
   const copyShareCode = (shareCode: string) => {
     navigator.clipboard.writeText(shareCode);
-    toast.success("Share code copied! Share this code with others to collaborate on this list.");
+    toast.success(translations.share_code_success);
   };
 
   const handleDeleteComplete = () => {
@@ -47,9 +49,9 @@ export function ListActionsDialog({ list, currentUserId, children }: ListActions
         </DialogTrigger>
         <DialogContent className="sm:max-w-md" onClick={(e) => e.stopPropagation()}>
           <DialogHeader>
-            <DialogTitle>List Actions</DialogTitle>
+            <DialogTitle>{translations.list_actions}</DialogTitle>
             <DialogDescription>
-              Manage your list settings and sharing options
+              {translations.manage_list_settings}
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4 py-4">
@@ -59,7 +61,7 @@ export function ListActionsDialog({ list, currentUserId, children }: ListActions
               onClick={() => copyShareCode(list.share_code)}
             >
               <Share2 className="mr-2 h-4 w-4" />
-              Copy Share Code
+              {translations.copy_share_code}
             </Button>
             {currentUserId === list.owner_id && (
               <Button
@@ -68,7 +70,7 @@ export function ListActionsDialog({ list, currentUserId, children }: ListActions
                 onClick={() => setDeleteDialogOpen(true)}
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete List
+                {translations.delete_list}
               </Button>
             )}
           </div>

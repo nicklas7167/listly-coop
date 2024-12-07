@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { DeleteConfirmationInput } from "./DeleteConfirmationInput";
 import { DeleteDialogActions } from "./DeleteDialogActions";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DeleteListDialogProps {
   list: {
@@ -32,6 +33,7 @@ export function DeleteListDialog({
 }: DeleteListDialogProps) {
   const [confirmationText, setConfirmationText] = useState("");
   const queryClient = useQueryClient();
+  const { translations } = useLanguage();
 
   const handleDeleteConfirm = async () => {
     if (confirmationText !== list.name) return;
@@ -54,28 +56,22 @@ export function DeleteListDialog({
       if (error) throw error;
 
       if (data) {
-        // Close both dialogs
         onDeleteComplete?.();
         
-        // Then invalidate queries to ensure consistency
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ['lists'] }),
           queryClient.invalidateQueries({ queryKey: ['itemCounts'] })
         ]);
         
-        toast.success("The list has been successfully deleted.");
+        toast.success(translations.delete_list_success);
       } else {
-        // Revert the optimistic update if deletion fails
         queryClient.setQueryData(['lists'], previousLists);
-        
-        toast.error("You don't have permission to delete this list.");
+        toast.error(translations.delete_list_error);
       }
     } catch (error) {
-      // Revert the optimistic update if there's an error
       queryClient.setQueryData(['lists'], previousLists);
-      
       console.error('Error deleting list:', error);
-      toast.error("Failed to delete the list. Please try again.");
+      toast.error(translations.delete_list_error);
     }
   };
 
@@ -88,14 +84,14 @@ export function DeleteListDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogTitle>{translations.delete_list_confirm}</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete the list
-            "{list.name}" and all its items.
+            {translations.delete_list_warning}
             <DeleteConfirmationInput
               listName={list.name}
               value={confirmationText}
               onChange={setConfirmationText}
+              translations={translations}
             />
           </DialogDescription>
         </DialogHeader>
@@ -103,6 +99,7 @@ export function DeleteListDialog({
           onCancel={handleCancel}
           onConfirm={handleDeleteConfirm}
           isConfirmDisabled={confirmationText !== list.name}
+          translations={translations}
         />
       </DialogContent>
     </Dialog>
