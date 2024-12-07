@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { checkListExists, joinList } from "@/utils/listOperations";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -25,7 +25,6 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
   const [firstName, setFirstName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,25 +49,16 @@ export function JoinListDialog({ open, onOpenChange }: JoinListDialogProps) {
       console.log("Join result - already member:", alreadyMember);
 
       if (alreadyMember) {
-        toast({
-          description: "You're already a member of this list.",
-        });
+        toast("You're already a member of this list.");
       } else {
-        toast({
-          title: "Success!",
-          description: "You've joined the list.",
-        });
+        toast.success("You've joined the list.");
       }
 
       navigate(`/list/${list.id}`);
       onOpenChange(false);
     } catch (error) {
       console.error("Error joining list:", error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to join list. Please check the share code and try again.",
-        variant: "destructive",
-      });
+      toast.error(error instanceof Error ? error.message : "Failed to join list. Please check the share code and try again.");
     } finally {
       setLoading(false);
     }

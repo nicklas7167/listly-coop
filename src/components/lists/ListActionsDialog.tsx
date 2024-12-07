@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Share2, Trash2 } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -26,14 +26,10 @@ interface ListActionsDialogProps {
 export function ListActionsDialog({ list, currentUserId, children }: ListActionsDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const { toast } = useToast();
 
   const copyShareCode = (shareCode: string) => {
     navigator.clipboard.writeText(shareCode);
-    toast({
-      title: "Share code copied!",
-      description: "Share this code with others to collaborate on this list.",
-    });
+    toast.success("Share code copied! Share this code with others to collaborate on this list.");
   };
 
   const handleDeleteComplete = () => {

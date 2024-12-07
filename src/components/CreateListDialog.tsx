@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { createList } from "@/utils/listOperations";
 
 interface CreateListDialogProps {
@@ -23,7 +23,6 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
   const [listName, setListName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,20 +31,12 @@ export function CreateListDialog({ open, onOpenChange }: CreateListDialogProps) 
     try {
       const data = await createList(listName);
       
-      toast({
-        title: "Success!",
-        description: "Your list has been created.",
-      });
-
+      toast.success("Your list has been created.");
       navigate(`/list/${data.id}`);
       onOpenChange(false);
     } catch (error) {
       console.error("Error creating list:", error);
-      toast({
-        title: "Error",
-        description: "Failed to create list. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to create list. Please try again.");
     } finally {
       setLoading(false);
     }

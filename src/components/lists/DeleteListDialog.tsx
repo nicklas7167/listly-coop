@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { DeleteConfirmationInput } from "./DeleteConfirmationInput";
@@ -31,7 +31,6 @@ export function DeleteListDialog({
   onDeleteComplete 
 }: DeleteListDialogProps) {
   const [confirmationText, setConfirmationText] = useState("");
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const handleDeleteConfirm = async () => {
@@ -64,30 +63,19 @@ export function DeleteListDialog({
           queryClient.invalidateQueries({ queryKey: ['itemCounts'] })
         ]);
         
-        toast({
-          title: "List deleted",
-          description: "The list has been successfully deleted.",
-        });
+        toast.success("The list has been successfully deleted.");
       } else {
         // Revert the optimistic update if deletion fails
         queryClient.setQueryData(['lists'], previousLists);
         
-        toast({
-          title: "Error",
-          description: "You don't have permission to delete this list.",
-          variant: "destructive",
-        });
+        toast.error("You don't have permission to delete this list.");
       }
     } catch (error) {
       // Revert the optimistic update if there's an error
       queryClient.setQueryData(['lists'], previousLists);
       
       console.error('Error deleting list:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete the list. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to delete the list. Please try again.");
     }
   };
 

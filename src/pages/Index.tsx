@@ -7,14 +7,13 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 const Index = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showJoinDialog, setShowJoinDialog] = useState(false);
   const [session, setSession] = useState(null);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
     // Get initial session
@@ -32,15 +31,12 @@ const Index = () => {
       setSession(session);
       if (session) {
         navigate("/dashboard");
-        toast({
-          title: "Welcome back!",
-          description: "You have successfully signed in.",
-        });
+        toast.success("Welcome back!");
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, toast]);
+  }, [navigate]);
 
   if (session) {
     return null; // Will redirect to dashboard
