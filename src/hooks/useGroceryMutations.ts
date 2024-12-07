@@ -68,6 +68,7 @@ export function useGroceryMutations(listId: string | undefined) {
         console.error('Error in delete mutation:', error);
         throw error;
       }
+      return itemId;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groceryItems', listId] });

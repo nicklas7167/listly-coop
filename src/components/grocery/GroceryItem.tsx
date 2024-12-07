@@ -14,8 +14,12 @@ export function GroceryItem({ id, name, completed, onToggle, onDelete }: Grocery
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const handleDelete = async () => {
-    await onDelete(id);
-    setShowDeleteDialog(false);
+    try {
+      await onDelete(id);
+      setShowDeleteDialog(false);
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
   };
 
   return (
