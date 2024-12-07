@@ -44,13 +44,13 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
           <Plus className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[90%] max-w-md p-6 gap-6">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">{translations.add_new_item}</DialogTitle>
+      <DialogContent className="w-[90%] max-w-md p-0 gap-0 rounded-2xl">
+        <DialogHeader className="p-6 pb-0">
+          <DialogTitle className="text-2xl font-bold text-left">Add New Item</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div className="space-y-2">
-            <label htmlFor="item-name" className="text-sm font-medium">
+            <label htmlFor="item-name" className="text-lg font-semibold">
               Item Name
             </label>
             <Input
@@ -58,13 +58,13 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
               value={newItem}
               onChange={(e) => setNewItem(e.target.value)}
               placeholder="e.g., Milk, Bread, Eggs"
-              className="h-12 px-4 text-base"
+              className="h-14 px-4 text-base rounded-xl border-2"
               autoFocus
             />
           </div>
           <div className="flex gap-4">
             <div className="flex-1 space-y-2">
-              <label className="text-sm font-medium">
+              <label className="text-lg font-semibold">
                 Store
               </label>
               <StoreSelect
@@ -73,8 +73,8 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
                 onChange={setStore}
               />
             </div>
-            <div className="w-24 space-y-2">
-              <label htmlFor="quantity" className="text-sm font-medium">
+            <div className="w-28 space-y-2">
+              <label htmlFor="quantity" className="text-lg font-semibold">
                 Quantity
               </label>
               <Input
@@ -83,14 +83,14 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 placeholder="0"
-                className="h-12 px-4 text-base"
+                className="h-14 px-4 text-base rounded-xl border-2"
                 min="0"
               />
             </div>
           </div>
           <Button 
             type="submit" 
-            className="w-full h-12 text-base font-medium" 
+            className="w-full h-14 text-base font-semibold rounded-xl bg-primary hover:bg-primary/90" 
             disabled={!newItem.trim() || isAdding}
           >
             {isAdding ? translations.adding_item : translations.add_item}

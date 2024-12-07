@@ -119,7 +119,7 @@ const GroceryList = () => {
         name, 
         list_id: id,
         store: store || null,
-        quantity: quantity ? parseInt(quantity, 10) || null : null
+        quantity: quantity ? parseFloat(quantity) || null : null
       }]);
 
     if (error) {
