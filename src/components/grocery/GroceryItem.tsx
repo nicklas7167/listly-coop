@@ -1,4 +1,6 @@
-import { SwipeableListItem } from "@/components/SwipeableListItem";
+import { useState } from "react";
+import { Trash } from "lucide-react";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 
 interface GroceryItemProps {
   id: string;
@@ -9,9 +11,23 @@ interface GroceryItemProps {
 }
 
 export function GroceryItem({ id, name, completed, onToggle, onDelete }: GroceryItemProps) {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const handleDelete = async () => {
+    await onDelete(id);
+    setShowDeleteDialog(false);
+  };
+
   return (
-    <SwipeableListItem onDelete={() => onDelete(id)}>
-      <div className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+    <>
+      <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
+        <button
+          onClick={() => setShowDeleteDialog(true)}
+          className="text-gray-400 hover:text-red-500 transition-colors"
+          aria-label="Delete item"
+        >
+          <Trash className="h-4 w-4" />
+        </button>
         <input
           type="checkbox"
           checked={completed}
@@ -22,6 +38,13 @@ export function GroceryItem({ id, name, completed, onToggle, onDelete }: Grocery
           {name}
         </span>
       </div>
-    </SwipeableListItem>
+
+      <DeleteConfirmDialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDelete}
+        itemName={name}
+      />
+    </>
   );
 }

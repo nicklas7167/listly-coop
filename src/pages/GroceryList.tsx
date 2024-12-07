@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { GroceryHeader } from "@/components/grocery/GroceryHeader";
 import { AddItemDialog } from "@/components/grocery/AddItemDialog";
 import { GroceryItem } from "@/components/grocery/GroceryItem";
-import { useToast } from "@/hooks/use-toast";
 import { AnimatePresence } from "framer-motion";
+import { useGroceryMutations } from "@/hooks/useGroceryMutations";
 
 interface GroceryItem {
   id: string;
@@ -17,9 +17,8 @@ interface GroceryItem {
 
 const GroceryList = () => {
   const { id } = useParams();
-  const { toast } = useToast();
   const [shareCode, setShareCode] = useState<string>("");
-  const queryClient = useQueryClient();
+  const { addItemMutation, toggleItemMutation, deleteItemMutation } = useGroceryMutations(id);
 
   // Fetch share code
   useEffect(() => {
@@ -61,91 +60,6 @@ const GroceryList = () => {
         throw error;
       }
       return data as GroceryItem[];
-    },
-  });
-
-  // Add item mutation
-  const addItemMutation = useMutation({
-    mutationFn: async (name: string) => {
-      if (!id) throw new Error('No list ID provided');
-      const { data, error } = await supabase
-        .from('grocery_items')
-        .insert([{ name, list_id: id }])
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['groceryItems', id] });
-      toast({
-        description: "Item added",
-        duration: 2000,
-      });
-    },
-    onError: (error) => {
-      console.error('Error adding item:', error);
-      toast({
-        description: "Failed to add item. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Toggle item mutation
-  const toggleItemMutation = useMutation({
-    mutationFn: async ({ itemId, completed }: { itemId: string; completed: boolean }) => {
-      const { data, error } = await supabase
-        .from('grocery_items')
-        .update({ completed })
-        .eq('id', itemId)
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['groceryItems', id] });
-    },
-    onError: (error) => {
-      console.error('Error toggling item:', error);
-      toast({
-        description: "Failed to update item. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Delete item mutation
-  const deleteItemMutation = useMutation({
-    mutationFn: async (itemId: string) => {
-      console.log('Deleting item:', itemId);
-      const { error } = await supabase
-        .from('grocery_items')
-        .delete()
-        .eq('id', itemId);
-
-      if (error) {
-        console.error('Error in delete mutation:', error);
-        throw error;
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['groceryItems', id] });
-      toast({
-        description: "Item removed",
-        duration: 2000,
-      });
-    },
-    onError: (error) => {
-      console.error('Delete mutation error:', error);
-      toast({
-        description: "Failed to delete item. Please try again.",
-        variant: "destructive",
-      });
-      throw error; // Re-throw to trigger the catch in SwipeableListItem
     },
   });
 
