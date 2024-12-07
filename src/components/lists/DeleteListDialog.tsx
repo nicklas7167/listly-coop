@@ -42,7 +42,11 @@ export function DeleteListDialog({ list, currentUserId, open, onOpenChange }: De
       if (error) throw error;
 
       if (data) {
-        // Immediately invalidate both queries to trigger a refresh
+        // Close the dialog first
+        onOpenChange(false);
+        setConfirmationText("");
+        
+        // Then invalidate queries and show toast
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ['lists'] }),
           queryClient.invalidateQueries({ queryKey: ['itemCounts'] })
@@ -52,7 +56,6 @@ export function DeleteListDialog({ list, currentUserId, open, onOpenChange }: De
           title: "List deleted",
           description: "The list has been successfully deleted.",
         });
-        onOpenChange(false);
       } else {
         toast({
           title: "Error",
@@ -68,8 +71,6 @@ export function DeleteListDialog({ list, currentUserId, open, onOpenChange }: De
         variant: "destructive",
       });
     }
-
-    setConfirmationText("");
   };
 
   const handleCancel = () => {
