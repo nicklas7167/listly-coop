@@ -93,6 +93,17 @@ const Index = () => {
               },
             }}
             theme="default"
+            onError={(error) => {
+              console.error('Auth error:', error);
+              // Handle different error cases
+              if (error.message.includes('invalid_credentials')) {
+                toast.error("Invalid email or password. Please try again.");
+              } else if (error.message.includes('User already registered')) {
+                toast.error("This email is already registered. Please sign in instead.");
+              } else {
+                toast.error("An error occurred. Please try again.");
+              }
+            }}
           />
         </div>
 
