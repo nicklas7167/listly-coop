@@ -1,29 +1,23 @@
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { LanguageProvider } from "./contexts/LanguageContext";
-import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
-import GroceryList from "./pages/GroceryList";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "sonner";
+import Index from "@/pages/Index";
+import Dashboard from "@/pages/Dashboard";
+import GroceryList from "@/pages/GroceryList";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+function App() {
+  return (
     <LanguageProvider>
-      <TooltipProvider>
-        <Toaster />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/list/:id" element={<GroceryList />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/list/:id" element={<GroceryList />} />
+        </Routes>
+        <Toaster position="top-center" />
+      </Router>
     </LanguageProvider>
-  </QueryClientProvider>
-);
+  );
+}
 
 export default App;
