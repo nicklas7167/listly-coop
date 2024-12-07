@@ -80,11 +80,13 @@ export function GroceryItem({ id, name, completed, creatorId, onToggle }: Grocer
         className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
       />
       <div className="flex-1">
-        <span className={completed ? "line-through text-gray-400" : ""}>
-          {name}
-        </span>
-        <div className="text-xs text-gray-500 mt-0.5">
-          {translations.addedBy}: {creatorProfile?.first_name || translations.anonymousUser}
+        <div className="flex items-baseline gap-2">
+          <span className={completed ? "line-through text-gray-400" : ""}>
+            {name}
+          </span>
+          <span className="text-xs text-gray-400 font-medium">
+            · {creatorProfile?.first_name || translations.anonymous_user}
+          </span>
         </div>
       </div>
       <AlertDialog>
