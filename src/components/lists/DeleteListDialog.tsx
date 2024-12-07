@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface DeleteListDialogProps {
   list: {
@@ -25,6 +26,7 @@ interface DeleteListDialogProps {
 export function DeleteListDialog({ list, currentUserId, open, onOpenChange }: DeleteListDialogProps) {
   const [confirmationText, setConfirmationText] = useState("");
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const handleDeleteConfirm = async () => {
     if (confirmationText !== list.name) return;
@@ -41,6 +43,10 @@ export function DeleteListDialog({ list, currentUserId, open, onOpenChange }: De
       if (error) throw error;
 
       if (data) {
+        // Invalidate both the lists and itemCounts queries
+        queryClient.invalidateQueries({ queryKey: ['lists'] });
+        queryClient.invalidateQueries({ queryKey: ['itemCounts'] });
+        
         toast({
           title: "List deleted",
           description: "The list has been successfully deleted.",
