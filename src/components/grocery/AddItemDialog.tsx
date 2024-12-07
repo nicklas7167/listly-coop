@@ -44,53 +44,36 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
           <Plus className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[90%] max-w-md p-0 gap-0 rounded-2xl">
-        <DialogHeader className="p-6 pb-0">
-          <DialogTitle className="text-2xl font-bold text-left">Add New Item</DialogTitle>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{translations.add_new_item}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          <div className="space-y-2">
-            <label htmlFor="item-name" className="text-lg font-semibold">
-              Item Name
-            </label>
-            <Input
-              id="item-name"
-              value={newItem}
-              onChange={(e) => setNewItem(e.target.value)}
-              placeholder="e.g., Milk, Bread, Eggs"
-              className="h-14 px-4 text-base rounded-xl border-2"
-              autoFocus
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+          <Input
+            value={newItem}
+            onChange={(e) => setNewItem(e.target.value)}
+            placeholder={translations.enter_item_name}
+            autoFocus
+          />
           <div className="flex gap-4">
-            <div className="flex-1 space-y-2">
-              <label className="text-lg font-semibold">
-                Store
-              </label>
+            <div className="flex-1">
               <StoreSelect
                 listId={listId || ""}
                 value={store}
                 onChange={setStore}
               />
             </div>
-            <div className="w-28 space-y-2">
-              <label htmlFor="quantity" className="text-lg font-semibold">
-                Quantity
-              </label>
-              <Input
-                id="quantity"
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                placeholder="0"
-                className="h-14 px-4 text-base rounded-xl border-2"
-                min="0"
-              />
-            </div>
+            <Input
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              placeholder={translations.quantity}
+              className="w-24"
+            />
           </div>
           <Button 
             type="submit" 
-            className="w-full h-14 text-base font-semibold rounded-xl bg-primary hover:bg-primary/90" 
+            className="w-full" 
             disabled={!newItem.trim() || isAdding}
           >
             {isAdding ? translations.adding_item : translations.add_item}
