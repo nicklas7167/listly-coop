@@ -9,6 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { ListsTable } from "@/components/ListsTable";
 import { useQuery } from "@tanstack/react-query";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 const Dashboard = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -75,6 +76,7 @@ const Dashboard = () => {
               <Share2 className="w-4 h-4" />
               {!isMobile && "Join List"}
             </Button>
+            <LanguageSelector />
             <Button
               variant="ghost"
               onClick={handleSignOut}
