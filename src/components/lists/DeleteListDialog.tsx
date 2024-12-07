@@ -20,9 +20,16 @@ interface DeleteListDialogProps {
   currentUserId?: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onDeleteComplete?: () => void;
 }
 
-export function DeleteListDialog({ list, currentUserId, open, onOpenChange }: DeleteListDialogProps) {
+export function DeleteListDialog({ 
+  list, 
+  currentUserId, 
+  open, 
+  onOpenChange,
+  onDeleteComplete 
+}: DeleteListDialogProps) {
   const [confirmationText, setConfirmationText] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -42,11 +49,15 @@ export function DeleteListDialog({ list, currentUserId, open, onOpenChange }: De
       if (error) throw error;
 
       if (data) {
-        // Close the dialog first
-        onOpenChange(false);
-        setConfirmationText("");
+        // Update the cache immediately to remove the deleted list
+        queryClient.setQueryData(['lists'], (oldData: any) => {
+          return oldData?.filter((item: any) => item.id !== list.id) || [];
+        });
+
+        // Close both dialogs
+        onDeleteComplete?.();
         
-        // Then invalidate queries and show toast
+        // Then invalidate queries to ensure consistency
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ['lists'] }),
           queryClient.invalidateQueries({ queryKey: ['itemCounts'] })

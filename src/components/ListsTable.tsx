@@ -63,7 +63,7 @@ export function ListsTable({ lists, loading }: ListsTableProps) {
     return <div className="text-center py-8">Loading your lists...</div>;
   }
 
-  if (lists.length === 0) {
+  if (!lists || lists.length === 0) {
     return (
       <div className="text-center py-8 bg-white rounded-lg shadow">
         <h3 className="text-xl font-semibold mb-2">No Lists Yet</h3>

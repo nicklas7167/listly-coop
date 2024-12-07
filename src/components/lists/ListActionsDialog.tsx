@@ -24,6 +24,7 @@ interface ListActionsDialogProps {
 }
 
 export function ListActionsDialog({ list, currentUserId, children }: ListActionsDialogProps) {
+  const [isOpen, setIsOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { toast } = useToast();
 
@@ -35,9 +36,14 @@ export function ListActionsDialog({ list, currentUserId, children }: ListActions
     });
   };
 
+  const handleDeleteComplete = () => {
+    setDeleteDialogOpen(false);
+    setIsOpen(false);
+  };
+
   return (
     <>
-      <Dialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild onClick={(e) => e.stopPropagation()}>
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
             {children}
@@ -78,6 +84,7 @@ export function ListActionsDialog({ list, currentUserId, children }: ListActions
         currentUserId={currentUserId}
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
+        onDeleteComplete={handleDeleteComplete}
       />
     </>
   );
