@@ -26,14 +26,10 @@ export function ListMembersDialog({ listId, open, onOpenChange }: ListMembersDia
   const { data: members = [], isLoading } = useQuery({
     queryKey: ['listMembers', listId],
     queryFn: async () => {
+      // First, get the list members
       const { data: memberData, error: memberError } = await supabase
         .from('list_members')
-        .select(`
-          user_id,
-          profiles (
-            first_name
-          )
-        `)
+        .select('user_id')
         .eq('list_id', listId);
 
       if (memberError) {
@@ -41,10 +37,22 @@ export function ListMembersDialog({ listId, open, onOpenChange }: ListMembersDia
         throw memberError;
       }
 
-      return memberData.map(member => ({
-        user_id: member.user_id,
-        first_name: member.profiles?.first_name || translations.anonymous_user
-      }));
+      // Then, for each member, get their profile information
+      const memberProfiles: Member[] = [];
+      for (const member of memberData) {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('first_name')
+          .eq('id', member.user_id)
+          .single();
+
+        memberProfiles.push({
+          user_id: member.user_id,
+          first_name: profileData?.first_name || translations.anonymous_user
+        });
+      }
+
+      return memberProfiles;
     },
     enabled: open && !!listId,
   });
