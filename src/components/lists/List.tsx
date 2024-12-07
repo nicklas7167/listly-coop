@@ -17,7 +17,7 @@ export function List({ list }: ListProps) {
   const [showActionsDialog, setShowActionsDialog] = useState(false);
 
   return (
-    <div className="flex items-center justify-between p-4 border rounded-lg mb-4 bg-white shadow-sm hover:bg-secondary/10 transition-colors">
+    <div className="flex items-center justify-between p-4 border rounded-lg mb-4 bg-white shadow-sm">
       <div>
         <h3 className="font-medium">{list.name}</h3>
       </div>
@@ -33,7 +33,8 @@ export function List({ list }: ListProps) {
 
       <ListActionsDialog
         list={list}
-        trigger={<MoreHorizontal className="h-4 w-4" />}
+        open={showActionsDialog}
+        onOpenChange={setShowActionsDialog}
       />
     </div>
   );

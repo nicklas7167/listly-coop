@@ -10,13 +10,14 @@ export const spanishTranslations: Translations = {
   create_first: "Crea tu primera lista o únete a una existente para comenzar.",
   loading_lists: "Cargando tus listas...",
   error_loading: "Error al Cargar Datos",
-  name: "¿Cómo quieres llamar a tu lista de compras?",
+  try_refresh: "Por favor, intenta refrescar la página.",
+  name: "Nombre",
   items: "Artículos",
   actions: "Acciones",
   
   // Create List Dialog
   create_new_list: "Crear Nueva Lista",
-  list_description: "Empecemos por conocerte y nombrar tu lista de compras.",
+  list_description: "Dale un nombre a tu lista de compras para comenzar.",
   creating: "Creando...",
   list_created: "Tu lista ha sido creada.",
   failed_create: "Error al crear la lista. Por favor, intenta de nuevo.",
@@ -24,7 +25,7 @@ export const spanishTranslations: Translations = {
   // Join List Dialog
   join_existing: "Unirse a Lista Existente",
   join_description: "Ingresa tu nombre y el código de compartir para unirte a una lista existente.",
-  first_name: "¿Cuál es tu nombre?",
+  first_name: "Nombre",
   enter_first_name: "Ingresa tu nombre",
   share_code: "Código de Compartir",
   enter_share_code: "Ingresa el código",
