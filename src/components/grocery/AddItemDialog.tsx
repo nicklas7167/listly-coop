@@ -44,11 +44,11 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
           <Plus className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="w-[90%] max-w-md p-6 gap-6">
         <DialogHeader>
-          <DialogTitle>{translations.add_new_item}</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">{translations.add_new_item}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label htmlFor="item-name" className="text-sm font-medium">
               Item Name
@@ -58,6 +58,7 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
               value={newItem}
               onChange={(e) => setNewItem(e.target.value)}
               placeholder="e.g., Milk, Bread, Eggs"
+              className="h-12 px-4 text-base"
               autoFocus
             />
           </div>
@@ -72,7 +73,7 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
                 onChange={setStore}
               />
             </div>
-            <div className="space-y-2">
+            <div className="w-24 space-y-2">
               <label htmlFor="quantity" className="text-sm font-medium">
                 Quantity
               </label>
@@ -82,14 +83,14 @@ export function AddItemDialog({ onAddItem, isAdding }: AddItemDialogProps) {
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 placeholder="0"
-                className="w-24"
+                className="h-12 px-4 text-base"
                 min="0"
               />
             </div>
           </div>
           <Button 
             type="submit" 
-            className="w-full" 
+            className="w-full h-12 text-base font-medium" 
             disabled={!newItem.trim() || isAdding}
           >
             {isAdding ? translations.adding_item : translations.add_item}
