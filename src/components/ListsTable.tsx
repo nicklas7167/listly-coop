@@ -32,19 +32,28 @@ export function ListsTable({ lists, loading }: ListsTableProps) {
   const { data: itemCounts } = useQuery({
     queryKey: ['itemCounts'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('grocery_items')
-        .select('list_id, count(*)', { count: 'exact', head: false })
-        .group('list_id');
-
-      if (error) throw error;
+      console.log("Fetching item counts...");
+      const counts: Record<string, number> = {};
       
-      // Convert to a map for easier lookup
-      return (data || []).reduce((acc, { list_id, count }) => {
-        acc[list_id] = count;
-        return acc;
-      }, {} as Record<string, number>);
+      // Fetch counts for each list individually
+      for (const list of lists) {
+        const { count, error } = await supabase
+          .from('grocery_items')
+          .select('*', { count: 'exact', head: true })
+          .eq('list_id', list.id);
+          
+        if (error) {
+          console.error('Error fetching count for list:', list.id, error);
+          counts[list.id] = 0;
+        } else {
+          counts[list.id] = count || 0;
+        }
+      }
+      
+      console.log("Item counts:", counts);
+      return counts;
     },
+    enabled: lists.length > 0,
   });
 
   const copyShareCode = (shareCode: string, event: React.MouseEvent) => {
