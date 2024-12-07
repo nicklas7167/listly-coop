@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { GroceryHeader } from "@/components/grocery/GroceryHeader";
 import { AddItemDialog } from "@/components/grocery/AddItemDialog";
 import { GroceryItem } from "@/components/grocery/GroceryItem";
@@ -17,6 +17,7 @@ interface GroceryItem {
 const GroceryList = () => {
   const { id } = useParams();
   const [shareCode, setShareCode] = useState<string>("");
+  const queryClient = useQueryClient();
 
   // Fetch share code
   useEffect(() => {
@@ -61,6 +62,46 @@ const GroceryList = () => {
     },
   });
 
+  // Toggle item mutation
+  const toggleMutation = useMutation({
+    mutationFn: async ({ itemId, completed }: { itemId: string; completed: boolean }) => {
+      const { error } = await supabase
+        .from('grocery_items')
+        .update({ completed: !completed })
+        .eq('id', itemId);
+
+      if (error) throw error;
+    },
+    onMutate: async ({ itemId, completed }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['groceryItems', id] });
+
+      // Snapshot the previous value
+      const previousItems = queryClient.getQueryData(['groceryItems', id]);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(['groceryItems', id], (old: GroceryItem[] | undefined) => {
+        if (!old) return [];
+        return old.map(item => 
+          item.id === itemId ? { ...item, completed: !completed } : item
+        );
+      });
+
+      // Return context with the previous value
+      return { previousItems };
+    },
+    onError: (err, variables, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousItems) {
+        queryClient.setQueryData(['groceryItems', id], context.previousItems);
+      }
+    },
+    onSettled: () => {
+      // Always refetch after error or success to ensure we're in sync with the server
+      queryClient.invalidateQueries({ queryKey: ['groceryItems', id] });
+    },
+  });
+
   const handleAddItem = async (name: string) => {
     if (!id) return;
     
@@ -74,18 +115,13 @@ const GroceryList = () => {
       console.error('Error adding item:', error);
       throw error;
     }
+
+    // Refetch items after adding
+    queryClient.invalidateQueries({ queryKey: ['groceryItems', id] });
   };
 
-  const toggleItem = async (itemId: string, currentStatus: boolean) => {
-    const { error } = await supabase
-      .from('grocery_items')
-      .update({ completed: !currentStatus })
-      .eq('id', itemId);
-
-    if (error) {
-      console.error('Error toggling item:', error);
-      throw error;
-    }
+  const toggleItem = async (itemId: string, completed: boolean) => {
+    await toggleMutation.mutate({ itemId, completed });
   };
 
   return (
