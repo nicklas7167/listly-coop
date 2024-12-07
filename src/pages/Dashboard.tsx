@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle, Share2, LogOut, Copy } from "lucide-react";
 import { CreateListDialog } from "@/components/CreateListDialog";
 import { JoinListDialog } from "@/components/JoinListDialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Table,
   TableBody,
@@ -22,6 +23,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const checkSession = async () => {
@@ -78,33 +80,36 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30 p-6">
+    <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30 p-4 sm:p-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">My Lists</h1>
-          <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold">My Lists</h1>
+          <div className="flex flex-wrap gap-2 sm:gap-4 w-full sm:w-auto">
             <Button
               onClick={() => setShowCreateDialog(true)}
-              className="flex items-center gap-2"
+              className="flex-1 sm:flex-none items-center gap-2"
+              size={isMobile ? "sm" : "default"}
             >
               <PlusCircle className="w-4 h-4" />
-              Create List
+              {!isMobile && "Create List"}
             </Button>
             <Button
               variant="outline"
               onClick={() => setShowJoinDialog(true)}
-              className="flex items-center gap-2"
+              className="flex-1 sm:flex-none items-center gap-2"
+              size={isMobile ? "sm" : "default"}
             >
               <Share2 className="w-4 h-4" />
-              Join List
+              {!isMobile && "Join List"}
             </Button>
             <Button
               variant="ghost"
               onClick={handleSignOut}
-              className="flex items-center gap-2"
+              className="flex-1 sm:flex-none items-center gap-2"
+              size={isMobile ? "sm" : "default"}
             >
               <LogOut className="w-4 h-4" />
-              Sign Out
+              {!isMobile && "Sign Out"}
             </Button>
           </div>
         </div>
@@ -117,11 +122,18 @@ const Dashboard = () => {
             <p className="text-gray-600 mb-4">
               Create your first list or join an existing one to get started.
             </p>
-            <div className="flex justify-center gap-4">
-              <Button onClick={() => setShowCreateDialog(true)}>
+            <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
+              <Button 
+                onClick={() => setShowCreateDialog(true)}
+                className="w-full sm:w-auto"
+              >
                 Create List
               </Button>
-              <Button variant="outline" onClick={() => setShowJoinDialog(true)}>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowJoinDialog(true)}
+                className="w-full sm:w-auto"
+              >
                 Join List
               </Button>
             </div>
@@ -133,7 +145,6 @@ const Dashboard = () => {
                 <TableRow>
                   <TableHead>Name</TableHead>
                   <TableHead>Share Code</TableHead>
-                  <TableHead>Created</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -145,19 +156,17 @@ const Dashboard = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 text-xs sm:text-sm"
                         onClick={() => copyShareCode(list.share_code)}
                       >
                         <span className="font-mono">{list.share_code}</span>
-                        <Copy className="w-4 h-4" />
+                        <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
                       </Button>
-                    </TableCell>
-                    <TableCell>
-                      {new Date(list.created_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button
                         variant="ghost"
+                        size={isMobile ? "sm" : "default"}
                         onClick={() => navigate(`/list/${list.id}`)}
                       >
                         View
