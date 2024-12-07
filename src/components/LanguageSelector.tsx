@@ -32,15 +32,32 @@ export function LanguageSelector() {
   const updateLanguage = async (languageCode: string) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.getUser();
+      const { data: { user }, error } = await supabase.auth.getUser();
       if (error) throw error;
 
-      const { error: updateError } = await supabase
+      if (!user) {
+        throw new Error("No user found");
+      }
+
+      // First try to update existing profile
+      const { error: updateError, data } = await supabase
         .from("profiles")
         .update({ preferred_language: languageCode })
-        .eq("id", (await supabase.auth.getUser()).data.user?.id);
+        .eq("id", user.id)
+        .select();
 
-      if (updateError) throw updateError;
+      // If no rows were affected (profile doesn't exist), create one
+      if (updateError || !data || data.length === 0) {
+        const { error: insertError } = await supabase
+          .from("profiles")
+          .insert([{ 
+            id: user.id, 
+            preferred_language: languageCode,
+            first_name: user.user_metadata?.first_name || 'User'
+          }]);
+
+        if (insertError) throw insertError;
+      }
 
       setLanguage(languageCode as "en" | "es" | "da");
       toast.success(`Language updated to ${languages.find(l => l.code === languageCode)?.name}`);
