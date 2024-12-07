@@ -1,4 +1,5 @@
 import * as React from "react"
+import { cn } from "@/lib/utils"
 
 import type {
   ToastActionElement,
@@ -141,6 +142,7 @@ type Toast = Omit<ToasterToast, "id">
 
 function toast({ ...props }: Toast) {
   const id = genId()
+  const isMobile = window.innerWidth < 768
 
   const update = (props: ToasterToast) =>
     dispatch({
@@ -155,8 +157,11 @@ function toast({ ...props }: Toast) {
       ...props,
       id,
       open: true,
-      duration: 2000, // Set default duration to 2 seconds
-      className: "bg-secondary/80 backdrop-blur-sm", // Make toasts more subtle
+      duration: isMobile ? 2000 : 3000, // Shorter duration on mobile
+      className: cn(
+        "bg-secondary/80 backdrop-blur-sm",
+        isMobile && "animate-slide-up"
+      ),
       onOpenChange: (open) => {
         if (!open) dismiss()
       },
