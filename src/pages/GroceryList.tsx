@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ interface GroceryItem {
   name: string;
   completed: boolean;
   list_id: string;
+  creator_id: string;
 }
 
 const GroceryList = () => {
@@ -164,6 +165,7 @@ const GroceryList = () => {
                     id={item.id}
                     name={item.name}
                     completed={item.completed}
+                    creatorId={item.creator_id}
                     onToggle={toggleItem}
                   />
                 ))}

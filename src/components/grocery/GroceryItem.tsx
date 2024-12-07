@@ -13,16 +13,36 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useQuery } from "@tanstack/react-query";
 
 interface GroceryItemProps {
   id: string;
   name: string;
   completed: boolean;
+  creatorId: string;
   onToggle: (id: string, completed: boolean) => Promise<void>;
 }
 
-export function GroceryItem({ id, name, completed, onToggle }: GroceryItemProps) {
+export function GroceryItem({ id, name, completed, creatorId, onToggle }: GroceryItemProps) {
   const { translations } = useLanguage();
+
+  const { data: creatorProfile } = useQuery({
+    queryKey: ['profile', creatorId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('first_name')
+        .eq('id', creatorId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching creator profile:', error);
+        return null;
+      }
+
+      return data;
+    },
+  });
 
   const handleDelete = async () => {
     try {
@@ -59,9 +79,14 @@ export function GroceryItem({ id, name, completed, onToggle }: GroceryItemProps)
         onChange={handleToggle}
         className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
       />
-      <span className={`flex-1 ${completed ? "line-through text-gray-400" : ""}`}>
-        {name}
-      </span>
+      <div className="flex-1">
+        <span className={completed ? "line-through text-gray-400" : ""}>
+          {name}
+        </span>
+        <div className="text-xs text-gray-500 mt-0.5">
+          {translations.added_by}: {creatorProfile?.first_name || translations.unknown_user}
+        </div>
+      </div>
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <button

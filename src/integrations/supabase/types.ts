@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           completed: boolean
           created_at: string
+          creator_id: string
           id: string
           list_id: string
           name: string
@@ -20,6 +21,7 @@ export type Database = {
         Insert: {
           completed?: boolean
           created_at?: string
+          creator_id?: string
           id?: string
           list_id: string
           name: string
@@ -27,6 +29,7 @@ export type Database = {
         Update: {
           completed?: boolean
           created_at?: string
+          creator_id?: string
           id?: string
           list_id?: string
           name?: string
