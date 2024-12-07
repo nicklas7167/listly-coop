@@ -26,16 +26,24 @@ export async function createList(listName: string) {
 
 export async function checkListExists(shareCode: string) {
   console.log("Checking list with share code:", shareCode);
+  
+  // Make sure we're querying with the exact share code
   const { data, error } = await supabase
     .from("lists")
     .select("*")
-    .eq("share_code", shareCode)
-    .single();
+    .eq("share_code", shareCode.trim())
+    .maybeSingle();  // Use maybeSingle instead of single to handle no results gracefully
 
   if (error) {
     console.error("Error checking list existence:", error);
+    throw new Error("Error checking list");
+  }
+  
+  if (!data) {
+    console.error("No list found with share code:", shareCode);
     throw new Error("List not found");
   }
+
   console.log("Found list data:", data);
   return data;
 }
@@ -46,27 +54,22 @@ export async function joinList(shareCode: string) {
   console.log("Current user:", user.id);
   
   // First, get the list ID from the share code
-  const { data: list, error: listError } = await supabase
-    .from("lists")
-    .select("id")
-    .eq("share_code", shareCode)
-    .single();
-
-  if (listError || !list) {
-    console.error("Error finding list:", listError);
-    throw new Error("List not found");
-  }
-
+  const list = await checkListExists(shareCode);
   console.log("Found list with ID:", list.id);
 
   try {
     // Check if already a member
-    const { data: existingMembership } = await supabase
+    const { data: existingMembership, error: membershipError } = await supabase
       .from("list_members")
       .select("*")
       .eq("list_id", list.id)
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
+
+    if (membershipError) {
+      console.error("Error checking membership:", membershipError);
+      throw membershipError;
+    }
 
     if (existingMembership) {
       console.log("User is already a member");
