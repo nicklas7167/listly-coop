@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { User } from "lucide-react";
+import { User, Crown } from "lucide-react";
 
 interface ListMembersDialogProps {
   listId: string;
@@ -18,6 +18,7 @@ interface ListMembersDialogProps {
 interface Member {
   user_id: string;
   first_name: string | null;
+  is_owner?: boolean;
 }
 
 export function ListMembersDialog({ listId, open, onOpenChange }: ListMembersDialogProps) {
@@ -26,7 +27,19 @@ export function ListMembersDialog({ listId, open, onOpenChange }: ListMembersDia
   const { data: members = [], isLoading } = useQuery({
     queryKey: ['listMembers', listId],
     queryFn: async () => {
-      // First, get the list members
+      // First, get the list details to know who's the owner
+      const { data: listData, error: listError } = await supabase
+        .from('lists')
+        .select('owner_id')
+        .eq('id', listId)
+        .single();
+
+      if (listError) {
+        console.error('Error fetching list:', listError);
+        throw listError;
+      }
+
+      // Then, get the list members
       const { data: memberData, error: memberError } = await supabase
         .from('list_members')
         .select('user_id')
@@ -37,22 +50,32 @@ export function ListMembersDialog({ listId, open, onOpenChange }: ListMembersDia
         throw memberError;
       }
 
-      // Then, for each member, get their profile information
+      // Get all user IDs (owner + members)
+      const userIds = [listData.owner_id, ...memberData.map(m => m.user_id)];
+      const uniqueUserIds = [...new Set(userIds)]; // Remove duplicates in case owner is also in members
+
+      // Then, for each user, get their profile information
       const memberProfiles: Member[] = [];
-      for (const member of memberData) {
+      for (const userId of uniqueUserIds) {
         const { data: profileData } = await supabase
           .from('profiles')
           .select('first_name')
-          .eq('id', member.user_id)
+          .eq('id', userId)
           .single();
 
         memberProfiles.push({
-          user_id: member.user_id,
-          first_name: profileData?.first_name || translations.anonymous_user
+          user_id: userId,
+          first_name: profileData?.first_name || translations.anonymous_user,
+          is_owner: userId === listData.owner_id
         });
       }
 
-      return memberProfiles;
+      // Sort to put owner first
+      return memberProfiles.sort((a, b) => {
+        if (a.is_owner) return -1;
+        if (b.is_owner) return 1;
+        return 0;
+      });
     },
     enabled: open && !!listId,
   });
@@ -73,7 +96,11 @@ export function ListMembersDialog({ listId, open, onOpenChange }: ListMembersDia
                   key={member.user_id}
                   className="flex items-center gap-2 p-2 rounded-lg bg-secondary/10"
                 >
-                  <User className="h-4 w-4 text-muted-foreground" />
+                  {member.is_owner ? (
+                    <Crown className="h-4 w-4 text-yellow-500" />
+                  ) : (
+                    <User className="h-4 w-4 text-muted-foreground" />
+                  )}
                   <span>{member.first_name}</span>
                 </div>
               ))}
