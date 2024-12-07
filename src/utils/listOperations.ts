@@ -24,7 +24,15 @@ export async function createList(listName: string) {
   return data;
 }
 
-export async function checkListExists(shareCode: string) {
+interface List {
+  id: string;
+  name: string;
+  created_at: string;
+  owner_id: string;
+  share_code: string;
+}
+
+export async function checkListExists(shareCode: string): Promise<List> {
   console.log("Checking list with share code:", shareCode);
   
   const { data, error } = await supabase
@@ -42,7 +50,7 @@ export async function checkListExists(shareCode: string) {
   }
 
   console.log("Found list data:", data);
-  return data;
+  return data as List;
 }
 
 export async function joinList(shareCode: string) {

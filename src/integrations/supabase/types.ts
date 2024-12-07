@@ -103,7 +103,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_list_by_share_code: {
+        Args: {
+          p_share_code: string
+        }
+        Returns: {
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+          share_code: string
+        }
+      }
+      join_list_with_share_code: {
+        Args: {
+          p_list_id: string
+          p_user_id: string
+          p_share_code: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
