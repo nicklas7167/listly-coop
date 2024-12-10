@@ -13,6 +13,7 @@ const Index = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showJoinDialog, setShowJoinDialog] = useState(false);
   const [session, setSession] = useState(null);
+  const [authView, setAuthView] = useState('sign_up');
   const authRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -109,10 +110,12 @@ const Index = () => {
         <div className="w-full max-w-md">
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 animate-fade-in border border-gray-100">
             <h2 className="text-2xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-              Join Listify
+              {authView === 'sign_up' ? 'Join Listify' : 'Welcome Back'}
             </h2>
             <Auth
               supabaseClient={supabase}
+              view={authView}
+              onViewChange={(view) => setAuthView(view)}
               appearance={{
                 theme: ThemeSupa,
                 variables: {
@@ -165,7 +168,6 @@ const Index = () => {
                 },
               }}
               theme="default"
-              view="sign_up"
             />
           </div>
         </div>
