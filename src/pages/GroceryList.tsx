@@ -3,13 +3,12 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { GroceryHeader } from "@/components/grocery/GroceryHeader";
-import { AddItemDialog } from "@/components/grocery/AddItemDialog";
-import { GroceryItem } from "@/components/grocery/GroceryItem";
-import { AnimatePresence } from "framer-motion";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { Users } from "lucide-react";
 import { ListMembersDialog } from "@/components/grocery/ListMembersDialog";
-import { Button } from "@/components/ui/button";
+import { GroceryListHeader } from "@/components/grocery/GroceryListHeader";
+import { GroceryListItems } from "@/components/grocery/GroceryListItems";
+import { GroceryListLoading } from "@/components/grocery/GroceryListLoading";
+import { GroceryListEmpty } from "@/components/grocery/GroceryListEmpty";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface GroceryItem {
   id: string;
@@ -143,45 +142,20 @@ const GroceryList = () => {
         <GroceryHeader shareCode={shareCode} />
 
         <div className="bg-white rounded-xl shadow-lg p-6 animate-scale-in">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold">
-                {listDetails?.name || translations.loading_lists}
-              </h1>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowMembers(true)}
-                className="h-8 w-8"
-              >
-                <Users className="h-4 w-4" />
-              </Button>
-            </div>
-            <AddItemDialog onAddItem={handleAddItem} isAdding={false} />
-          </div>
+          <GroceryListHeader
+            listName={listDetails?.name || ""}
+            isLoading={isLoading}
+            onShowMembers={() => setShowMembers(true)}
+            onAddItem={handleAddItem}
+          />
 
           {isLoading ? (
-            <div className="text-center py-4">{translations.loading_items}</div>
+            <GroceryListLoading />
           ) : (
-            <div className="space-y-2">
-              <AnimatePresence initial={false}>
-                {items.map((item) => (
-                  <GroceryItem
-                    key={item.id}
-                    id={item.id}
-                    name={item.name}
-                    completed={item.completed}
-                    creatorId={item.creator_id}
-                    onToggle={toggleItem}
-                  />
-                ))}
-              </AnimatePresence>
-              {items.length === 0 && (
-                <div className="text-center py-4 text-gray-500">
-                  {translations.no_items}
-                </div>
-              )}
-            </div>
+            <>
+              <GroceryListItems items={items} onToggleItem={toggleItem} />
+              {items.length === 0 && <GroceryListEmpty />}
+            </>
           )}
         </div>
       </div>
