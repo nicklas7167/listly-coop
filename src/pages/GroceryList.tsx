@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { GroceryHeader } from "@/components/grocery/GroceryHeader";
@@ -21,16 +21,30 @@ interface GroceryItem {
 
 const GroceryList = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [shareCode, setShareCode] = useState<string>("");
   const queryClient = useQueryClient();
   const { translations } = useLanguage();
   const [showMembers, setShowMembers] = useState(false);
 
+  // Check authentication status
+  const { data: session } = useQuery({
+    queryKey: ['session'],
+    queryFn: async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error('Auth error:', error);
+        throw error;
+      }
+      return session;
+    },
+  });
+
   // Fetch list details
-  const { data: listDetails } = useQuery({
+  const { data: listDetails, isError: listError } = useQuery({
     queryKey: ['list', id],
     queryFn: async () => {
-      if (!id) return null;
+      if (!id || !session) return null;
       
       const { data, error } = await supabase
         .from("lists")
@@ -48,13 +62,14 @@ const GroceryList = () => {
       }
       return data;
     },
+    enabled: !!session && !!id,
   });
 
   // Fetch items query
-  const { data: items = [], isLoading } = useQuery({
+  const { data: items = [], isLoading, isError: itemsError } = useQuery({
     queryKey: ['groceryItems', id],
     queryFn: async () => {
-      if (!id) return [];
+      if (!id || !session) return [];
       const { data, error } = await supabase
         .from('grocery_items')
         .select('*')
@@ -67,6 +82,7 @@ const GroceryList = () => {
       }
       return data as GroceryItem[];
     },
+    enabled: !!session && !!id,
   });
 
   // Toggle item mutation
@@ -80,31 +96,22 @@ const GroceryList = () => {
       if (error) throw error;
     },
     onMutate: async ({ itemId, completed }) => {
-      // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['groceryItems', id] });
-
-      // Snapshot the previous value
       const previousItems = queryClient.getQueryData(['groceryItems', id]);
-
-      // Optimistically update to the new value
       queryClient.setQueryData(['groceryItems', id], (old: GroceryItem[] | undefined) => {
         if (!old) return [];
         return old.map(item => 
           item.id === itemId ? { ...item, completed: !completed } : item
         );
       });
-
-      // Return context with the previous value
       return { previousItems };
     },
     onError: (err, variables, context) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousItems) {
         queryClient.setQueryData(['groceryItems', id], context.previousItems);
       }
     },
     onSettled: () => {
-      // Always refetch after error or success to ensure we're in sync with the server
       queryClient.invalidateQueries({ queryKey: ['groceryItems', id] });
     },
   });
@@ -123,13 +130,34 @@ const GroceryList = () => {
       throw error;
     }
 
-    // Refetch items after adding
     queryClient.invalidateQueries({ queryKey: ['groceryItems', id] });
   };
 
   const toggleItem = async (itemId: string, completed: boolean) => {
     await toggleMutation.mutate({ itemId, completed });
   };
+
+  // Handle authentication errors
+  if (!session) {
+    navigate('/');
+    return null;
+  }
+
+  // Handle errors
+  if (listError || itemsError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30 p-4">
+        <div className="max-w-2xl mx-auto text-center py-12">
+          <h1 className="text-xl font-semibold text-gray-900 mb-2">
+            {translations.error_loading}
+          </h1>
+          <p className="text-gray-600">
+            {translations.try_refresh}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30 p-4">
