@@ -8,12 +8,13 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { ViewType } from "@supabase/auth-ui-shared";
 
 const Index = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showJoinDialog, setShowJoinDialog] = useState(false);
   const [session, setSession] = useState(null);
-  const [authView, setAuthView] = useState('sign_up');
+  const [authView, setAuthView] = useState<ViewType>('sign_up');
   const authRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
