@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { GroceryHeader } from "@/components/grocery/GroceryHeader";
@@ -21,30 +21,16 @@ interface GroceryItem {
 
 const GroceryList = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [shareCode, setShareCode] = useState<string>("");
   const queryClient = useQueryClient();
   const { translations } = useLanguage();
   const [showMembers, setShowMembers] = useState(false);
 
-  // Check authentication status
-  const { data: session } = useQuery({
-    queryKey: ['session'],
-    queryFn: async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error('Auth error:', error);
-        throw error;
-      }
-      return session;
-    },
-  });
-
   // Fetch list details
   const { data: listDetails, isError: listError } = useQuery({
     queryKey: ['list', id],
     queryFn: async () => {
-      if (!id || !session) return null;
+      if (!id) return null;
       
       const { data, error } = await supabase
         .from("lists")
@@ -62,14 +48,13 @@ const GroceryList = () => {
       }
       return data;
     },
-    enabled: !!session && !!id,
   });
 
   // Fetch items query
   const { data: items = [], isLoading, isError: itemsError } = useQuery({
     queryKey: ['groceryItems', id],
     queryFn: async () => {
-      if (!id || !session) return [];
+      if (!id) return [];
       const { data, error } = await supabase
         .from('grocery_items')
         .select('*')
@@ -82,7 +67,6 @@ const GroceryList = () => {
       }
       return data as GroceryItem[];
     },
-    enabled: !!session && !!id,
   });
 
   // Toggle item mutation
@@ -136,12 +120,6 @@ const GroceryList = () => {
   const toggleItem = async (itemId: string, completed: boolean) => {
     await toggleMutation.mutate({ itemId, completed });
   };
-
-  // Handle authentication errors
-  if (!session) {
-    navigate('/');
-    return null;
-  }
 
   // Handle errors
   if (listError || itemsError) {
