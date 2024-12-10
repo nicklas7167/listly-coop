@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Users } from "lucide-react";
 import { AddItemDialog } from "./AddItemDialog";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface GroceryListHeaderProps {
   listName: string;
