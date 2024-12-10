@@ -2,7 +2,6 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { ViewType } from "@supabase/auth-ui-shared";
-import { useEffect } from "react";
 
 interface AuthSectionProps {
   authRef: React.RefObject<HTMLDivElement>;
@@ -19,7 +18,7 @@ export const AuthSection = ({ authRef, view, setView }: AuthSectionProps) => {
       <div className="w-full max-w-md">
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 animate-fade-in border border-gray-100">
           <h2 className="text-2xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-            {view === 'sign_up' ? 'Join Listify' : 'Welcome Back'}
+            {view === 'sign_in' ? 'Welcome Back' : 'Join Listify'}
           </h2>
           <Auth
             supabaseClient={supabase}
